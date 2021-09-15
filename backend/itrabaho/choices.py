@@ -27,3 +27,9 @@ class ActivityTypeChoices(TextChoices):
     MATCH = ("M", "Match")
     REVIEW = ("R", "Review")
     ACCEPTED = ("A", "Accepted")
+
+
+class JobPostStatusChoices(TextChoices):
+    HIRING = ("H", "Hiring")
+    ACTIVE = ("A", "Active")
+    DONE = ("D", "Done")

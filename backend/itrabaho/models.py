@@ -10,6 +10,7 @@ from backend.itrabaho.choices import (
     ActivityTypeChoices,
     SexChoices,
     StatusChoices,
+    JobPostStatusChoices,
 )
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -102,6 +103,30 @@ class ApplicantModel(UserModel):
 
     class Meta:
         verbose_name = "Applicant"
+
+
+class JobPostModel(models.Model):
+    street = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    barangay = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    city = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    status = models.CharField(max_length=1, choices=JobPostStatusChoices.choices)
+    description = models.CharField(max_length=LONG_MAX_LENGTH)
+    role = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+
+    # Foreign Keys
+    recruiter = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Job Model"
+
+
+class ApplicantsListModel(models.Model):
+    # Foreign Keys
+    jobPostId = models.ForeignKey(JobPostModel, on_delete=models.CASCADE)
+    applicantId = models.ForeignKey(ApplicantModel, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "ApplicantsList"
 
 
 class ReviewModel(models.Model):
