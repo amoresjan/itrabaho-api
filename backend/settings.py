@@ -93,7 +93,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
-AUTH_USER_MODEL = "itrabaho.User"
+AUTH_USER_MODEL = "itrabaho.UserModel"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -116,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Hong_Kong"
 
 USE_I18N = True
 
