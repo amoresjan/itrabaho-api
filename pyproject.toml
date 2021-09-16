@@ -11,6 +11,9 @@ black = "^21.8b0"
 djangorestframework = "^3.12.4"
 pylint = "^2.10.2"
 psycopg2 = "^2.9.1"
+isort = "^5.9.3"
+twilio = "^6.63.2"
+python-dotenv = "^0.19.0"
 
 [tool.poetry.dev-dependencies]
 
