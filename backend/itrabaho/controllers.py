@@ -26,17 +26,14 @@ class LoginController(viewsets.GenericViewSet):
         serializer = serializers.LoginRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        phoneNumber = serializer.validated_data.get("phoneNumber")
-        password = serializer.validated_data.get("password")
+        phoneNumber = self.getRequestData(serializer, "phoneNumber")
+        password = self.getRequestData(serializer, "password")
 
         if user := authenticate(username=phoneNumber, password=password):
             self.updateLastLogin(user)
-            return Response(serializers.UserModelSerializer(user).data)
+            return self.sendUserResponseData(user)
 
         return Response("Login unauthorized", status=status.HTTP_401_UNAUTHORIZED)
-
-    def getRequestData(self, request):
-        return Response("asd")
 
     def isLGURep(self, user):
         return isinstance(user, models.LGURepresentativeModel)
@@ -45,11 +42,14 @@ class LoginController(viewsets.GenericViewSet):
         user.lastLogin = timezone.now()
         user.save(update_fields=["last_login"])
 
-    def isRecruiter(self):
+    def isRecruiter(self, user):
         return isinstance(user, models.RecruiterModel)
 
-    def sendUserResponseData(self):
-        pass
+    def getRequestData(self, serializer, data):
+        return serializer.validated_data.get(data)
+
+    def sendUserResponseData(self, user):
+        return Response(serializers.UserModelSerializer(user).data)
 
     def checkUserExist(self, phoneNumber):
         return models.UserModel.objects.filter(phoneNumber=phoneNumber)
