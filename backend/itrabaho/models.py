@@ -28,6 +28,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     phoneNumber = models.CharField(max_length=MOBILE_NUMBER_MAX_LENGTH, unique=True)
     sex = models.CharField(max_length=1, choices=SexChoices.choices)
     birthDate = models.DateField(blank=True, null=True)
+    lastLogin = models.DateField(null=True, blank=True)
 
     objects = managers.UserManager()
 
