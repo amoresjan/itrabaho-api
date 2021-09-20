@@ -1,18 +1,26 @@
+from backend.itrabaho import models, serializers
+from django.contrib.auth import authenticate
+from django.utils import timezone
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status, viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
-from rest_framework import status, viewsets
-from django.contrib.auth import authenticate
-from django.utils import timezone
-
-from backend.itrabaho import models, serializers
 
 # Create your views here.
 
 
 class LoginController(viewsets.GenericViewSet):
+    serializer_class = serializers.UserModelSerializer
     queryset = models.UserModel.objects.all()
 
+    @swagger_auto_schema(
+        request_body=serializers.LoginRequestSerializer(),
+        responses={
+            200: serializers.UserModelSerializer(),
+            400: "`string`",
+        },
+    )
     @action(methods=["POST"], detail=False)
     def login(self, request):
         serializer = serializers.LoginRequestSerializer(data=request.data)
