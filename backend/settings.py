@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Project Apps
-    "backend.itrabaho",
+    "backend.itrabaho.apps.ItrabahoConfig",
     # Third Party Apps
     "rest_framework",
 ]

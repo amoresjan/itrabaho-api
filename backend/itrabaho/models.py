@@ -110,9 +110,12 @@ class JobPostModel(models.Model):
     street = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     barangay = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     city = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    province = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     status = models.CharField(max_length=1, choices=JobPostStatusChoices.choices)
     description = models.CharField(max_length=LONG_MAX_LENGTH)
     role = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    datetimeCreated = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=DEFAULT_MAX_LENGTH)
 
     # Foreign Keys
     recruiter = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
@@ -146,7 +149,7 @@ class ReviewModel(models.Model):
 
 class ActivityModel(models.Model):
     type = models.CharField(max_length=1, choices=ActivityTypeChoices.choices)
-    datetime_created = models.DateTimeField(auto_now_add=True)
+    datetimeCreated = models.DateTimeField(auto_now_add=True)
     label = models.CharField(max_length=LONG_MAX_LENGTH)
     contentType = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     objectId = models.PositiveSmallIntegerField()
