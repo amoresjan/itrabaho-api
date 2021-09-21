@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
+from rest_framework.serializers import Serializer
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
@@ -53,3 +54,26 @@ class LoginController(viewsets.GenericViewSet):
 
     def checkUserExist(self, phoneNumber):
         return models.UserModel.objects.filter(phoneNumber=phoneNumber)
+
+
+class ApplicantsController(viewsets.GenericViewSet):
+    serializer_class = serializers.ApplicantsModelSerializer
+    queryset = models.ApplicantModel.objects.all()
+
+    def getRequestData(self, serializer, data):
+        return serializer.validated_data.get(data)
+
+    def sendUserResponseData(self, user):
+        return Response(serializers.ApplicantsModelSerializer(user).data)
+
+    @swagger_auto_schema(
+        responses={
+            200: serializers.UserModelSerializer(),
+            400: "`string`",
+        },
+    )
+    @action(url_path="applicants", methods=["GET"], detail=True)
+    def getApplicantById(self, request, pk=None):
+        applicant = models.ApplicantModel.objects.filter(id=pk)
+
+        return self.sendUserResponseData(applicant)
