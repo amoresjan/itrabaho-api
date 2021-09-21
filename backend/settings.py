@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "backend.itrabaho.apps.ItrabahoConfig",
     # Third Party Apps
     "rest_framework",
+    "drf_yasg"
 ]
 
 MIDDLEWARE = [
