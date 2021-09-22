@@ -219,3 +219,47 @@ class JobPostController(
 
     # def save():
     #     pass
+
+
+class SignUpController(viewsets.GenericViewSet):
+    serializer_class = serializers.base.UserModelSerializer
+    queryset = models.UserModel.objects
+
+    def getRequestData(self, serializer, data):
+        return serializer.validated_data.get(data)
+
+    def sendUserResponseData(self, user):
+        return Response(self.get_serializer(user).data)
+
+    @swagger_auto_schema(
+        responses={200: serializers.base.UserModelSerializer(), 401: "`string`"},
+    )
+    @action(url_path="signup", methods=["POST"], detail=False)
+    def signup(self, request):
+        serializer = serializers.request.SignupRequestSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        phoneNumber = serializer.validated_data.get("phoneNumber")
+        password = serializer.validated_data.get("password")
+        firstName = serializer.validated_data.get("firstName")
+        lastName = serializer.validated_data.get("lastName")
+
+        if self.checkMobileNumberExist(phoneNumber):
+            return Response(
+                "Phone number is already taken",
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        user = models.UserModel.objects.create_user(
+            phoneNumber=phoneNumber,
+            password=password,
+            firstName=firstName,
+            lastName=lastName,
+        )
+
+        return self.sendUserResponseData(user)
+
+    def checkMobileNumberExist(self, phoneNumber):
+        return models.UserModel.objects.filter(phoneNumber=phoneNumber).exists()
