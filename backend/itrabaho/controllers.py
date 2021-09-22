@@ -196,7 +196,7 @@ class JobPostController(
             200: serializers.base.JobPostModelSerializer(many=True),
         }
     )
-    @action(url_path="list", methods=["GET"], detail=True)
+    @action(url_path="list", methods=["GET"], detail=False)
     def getJobPosts(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
