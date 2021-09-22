@@ -7,7 +7,7 @@ from backend.itrabaho import controllers
 
 ROUTER = DefaultRouter()
 
-ROUTER.register("", controllers.LoginController, basename="login")
-ROUTER.register("", controllers.ApplicantsController, basename="applicants")
+ROUTER.register("", controllers.LoginController)
+ROUTER.register("applicants", controllers.ApplicantController)
 
 urlpatterns = path("", include(ROUTER.urls))
