@@ -118,7 +118,7 @@ class JobPostModel(models.Model):
     title = models.CharField(max_length=DEFAULT_MAX_LENGTH)
 
     # Foreign Keys
-    recruiter = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
+    recruiterId = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = "Job Model"

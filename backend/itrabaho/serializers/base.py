@@ -12,3 +12,9 @@ class ApplicantsModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ApplicantModel
         fields = ["id", "last_login", "firstName", "lastName", "phoneNumber"]
+
+
+class JobPostModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.JobPostModel
+        fields = "__all__"
