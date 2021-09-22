@@ -7,6 +7,7 @@ from backend.itrabaho import controllers
 ROUTER = DefaultRouter()
 
 ROUTER.register("", controllers.LoginController)
+ROUTER.register("", controllers.SignUpController)
 ROUTER.register("applicants", controllers.ApplicantController)
 ROUTER.register("jobs", controllers.JobPostController)
 
