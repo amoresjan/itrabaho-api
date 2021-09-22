@@ -1,4 +1,5 @@
 from typing import Match
+
 from django.db.models import TextChoices
 from django.db.models.enums import IntegerChoices
 

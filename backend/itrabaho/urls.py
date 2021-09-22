@@ -4,7 +4,6 @@ from rest_framework.routers import DefaultRouter
 
 from backend.itrabaho import controllers
 
-
 ROUTER = DefaultRouter()
 
 ROUTER.register("", controllers.LoginController)

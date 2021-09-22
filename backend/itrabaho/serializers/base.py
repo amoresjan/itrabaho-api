@@ -1,5 +1,6 @@
-from backend.itrabaho import models
 from rest_framework import serializers
+
+from backend.itrabaho import models
 
 
 class UserModelSerializer(serializers.ModelSerializer):
