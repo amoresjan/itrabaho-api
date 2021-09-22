@@ -4,7 +4,7 @@ from backend.itrabaho import models, serializers
 from django.contrib.auth import authenticate
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status, viewsets, mixins
+from rest_framework import status, viewsets
 from rest_framework.serializers import Serializer
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
