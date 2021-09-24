@@ -1,11 +1,9 @@
 from django.contrib.auth import authenticate
-from django.db.models import query
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import response, status, viewsets
-from rest_framework.decorators import action, api_view
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
 from rest_framework.settings import api_settings
 
 from backend.itrabaho import models, serializers
@@ -175,13 +173,9 @@ class JobPostController(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
 
-    def getJobPostById(self):
-        return self.sendUserResponseData(self.get_object())
-
     @action(url_path="recruiter", methods=["GET"], detail=True)
     def getJobPostsByRecruiter(self, request, pk=None):
         queryset = models.JobPostModel.objects.filter(recruiterId=pk)
-        print(queryset)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -241,10 +235,10 @@ class SignUpController(viewsets.GenericViewSet):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        phoneNumber = serializer.validated_data.get("phoneNumber")
-        password = serializer.validated_data.get("password")
-        firstName = serializer.validated_data.get("firstName")
-        lastName = serializer.validated_data.get("lastName")
+        phoneNumber = self.getRequestData(serializer, "phoneNumber")
+        password = self.getRequestData(serializer, "password")
+        firstName = self.getRequestData(serializer, "firstName")
+        lastName = self.getRequestData(serializer, "lastName")
 
         if self.checkMobileNumberExist(phoneNumber):
             return Response(
@@ -263,3 +257,35 @@ class SignUpController(viewsets.GenericViewSet):
 
     def checkMobileNumberExist(self, phoneNumber):
         return models.UserModel.objects.filter(phoneNumber=phoneNumber).exists()
+
+
+class RecruiterController(viewsets.GenericViewSet):
+    serializer_class = serializers.base.RecruiterModelSerializer
+    queryset = models.RecruiterModel.objects
+
+    def getRequestData(self, serializer, data):
+        return serializer.validated_data.get(data)
+
+    def sendUserResponseData(self, user):
+        return Response(self.get_serializer(user).data)
+
+    @swagger_auto_schema(
+        responses={
+            200: serializers.base.RecruiterModelSerializer(),
+        },
+    )
+    @action(url_path="get", methods=["GET"], detail=True)
+    def getRecruiterById(self, request, *args, **kwargs):
+        return self.sendUserResponseData(self.get_object())
+
+    @action(url_path="jobs", methods=["GET"], detail=True)
+    def getJobPosts(self, request, pk):
+        queryset = models.JobPostModel.objects.filter(recruiterId=pk)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = serializers.base.JobPostModelSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = serializers.base.JobPostModelSerializer(queryset, many=True)
+        return Response(serializer.data)

@@ -19,3 +19,9 @@ class JobPostModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.JobPostModel
         fields = "__all__"
+
+
+class RecruiterModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.RecruiterModel
+        fields = ["id", "last_login", "firstName", "lastName", "phoneNumber"]
