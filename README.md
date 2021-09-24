@@ -2,7 +2,7 @@
 
 ## Setup
 
-### PostgreSQL
+### Database
 
 Install [PostgreSQL](https://www.postgresql.org/download/)
 
@@ -18,7 +18,23 @@ CREATE USER postgres WITH PASSWORD 'password';
 GRANT ALL PRIVILEGES ON DATABASE "itrabaho_db" to postgres;
 ```
 
-### Poetry
+```sql
+\q
+```
+
+```bash
+cd path/to/itrabaho-api
+```
+
+```bash
+python manage.py migrate
+```
+
+```bash
+python manage.py loaddata data.json
+```
+
+### Dependencies
 
 Install [Poetry](https://python-poetry.org/docs/#installation)
 
