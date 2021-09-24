@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.db.models import query
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
@@ -7,8 +8,6 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
 from backend.itrabaho import models, serializers
-
-# Create your views here.
 
 
 class LoginController(viewsets.GenericViewSet):
@@ -211,9 +210,6 @@ class JobPostController(
     def getJobPostById(self, request, *args, **kwargs):
         return self.sendUserResponseData(self.get_object())
 
-    # def save():
-    #     pass
-
 
 class SignUpController(viewsets.GenericViewSet):
     serializer_class = serializers.base.UserModelSerializer
@@ -289,3 +285,25 @@ class RecruiterController(viewsets.GenericViewSet):
 
         serializer = serializers.base.JobPostModelSerializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class ReviewController(viewsets.GenericViewSet):
+    serializer_class = serializers.base.ReviewModelSerializer
+    queryset = models.ReviewModel.objects
+
+    @swagger_auto_schema(responses={200: serializers.base.ReviewModelSerializer()})
+    @action(url_path="review", methods=["POST"], detail=False)
+    def postReview(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        try:
+            headers = {"Location": str(serializer.data[api_settings.URL_FIELD_NAME])}
+        except (TypeError, KeyError):
+            headers = {}
+        return self.sendReviewResponseData(serializer, headers)
+
+    def sendReviewResponseData(self, serializer, headers):
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )

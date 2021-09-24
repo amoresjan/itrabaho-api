@@ -1,3 +1,4 @@
+from backend.itrabaho.serializers import base
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
@@ -7,6 +8,7 @@ ROUTER = DefaultRouter()
 
 ROUTER.register("", controllers.LoginController)
 ROUTER.register("", controllers.SignUpController)
+ROUTER.register("", controllers.ReviewController)
 ROUTER.register("applicants", controllers.ApplicantController)
 ROUTER.register("jobs", controllers.JobPostController)
 ROUTER.register("recruiters", controllers.RecruiterController)
