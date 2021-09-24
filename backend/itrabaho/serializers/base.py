@@ -25,3 +25,9 @@ class RecruiterModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.RecruiterModel
         fields = ["id", "last_login", "firstName", "lastName", "phoneNumber"]
+
+
+class ReviewModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ReviewModel
+        fields = "__all__"
