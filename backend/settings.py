@@ -26,12 +26,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get(
+    "django-insecure-mri7-8--qgvrp3n*+nsaqd=hyc59)3@htyri-z4oniicnik^0$"
+)
 
 # Twilio credentials and phone number
-TWILIO_ACCOUNT_SID = os.environ.get("TWILLIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = os.environ.get("TWILLIO_AUTH_TOKEN")
-TWILIO_NUMBER = os.environ.get("TWILLIO_AUTH_TOKEN")
+TWILIO_ACCOUNT_SID = os.environ.get("AC5bd587634030a1a94c185c7d655ce92e")
+TWILIO_AUTH_TOKEN = os.environ.get("5f23e0bef38b4930b77deb2aebc25363")
+TWILIO_NUMBER = os.environ.get("+17472236135")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
