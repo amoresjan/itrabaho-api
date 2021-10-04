@@ -98,9 +98,14 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    "default": dj_database_url.config(
-        default="postgres://postgres@localhost/itrabaho_db"
-    )
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "itrabaho_db",
+        "USER": "itrabaho",
+        "PASSWORD": "password",
+        "HOST": "localhost",
+        "PORT": "",
+    }
 }
 
 
