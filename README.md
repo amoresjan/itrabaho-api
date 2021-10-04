@@ -15,7 +15,7 @@ CREATE USER itrabaho WITH PASSWORD 'password';
 ```
 
 ```sql
-GRANT ALL PRIVILEGES ON DATABASE "itrabaho_db" to postgres;
+GRANT ALL PRIVILEGES ON DATABASE "itrabaho_db" to itrabaho;
 ```
 
 ```sql
