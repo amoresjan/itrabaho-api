@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+import os
+from twilio.rest import Client
 
 from backend.globals import (
     DEFAULT_MAX_LENGTH,
@@ -145,6 +147,20 @@ class ReviewModel(models.Model):
 
     class Meta:
         verbose_name = "Review"
+
+    # def save(self, *args, **kwargs):
+    #     account_sid = os.environ["TWILIO_ACCOUNT_SID"]
+    #     auth_token = os.environ["TWILIO_AUTH_TOKEN"]
+    #     client = Client(account_sid, auth_token)
+
+    #     message = client.messages.create(
+    #         body=f"We are glad to inform you that one of the projects in Itrabaho wants to employ you.",
+    #         from_="+18123823861",
+    #         to="+639774297330",  # must be dynamic, number of the applicant
+    #     )
+
+    #     print(message.sid)
+    #     return super().save(*args, **kwargs)
 
 
 class ActivityModel(models.Model):
