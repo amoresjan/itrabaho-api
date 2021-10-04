@@ -11,11 +11,11 @@ CREATE DATABASE itrabaho_db;
 ```
 
 ```sql
-CREATE USER postgres WITH PASSWORD 'password';
+CREATE USER itrabaho WITH PASSWORD 'password';
 ```
 
 ```sql
-GRANT ALL PRIVILEGES ON DATABASE "itrabaho_db" to postgres;
+GRANT ALL PRIVILEGES ON DATABASE "itrabaho_db" to itrabaho;
 ```
 
 ```sql
