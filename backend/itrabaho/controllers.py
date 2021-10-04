@@ -71,7 +71,7 @@ class LoginController(viewsets.GenericViewSet):
         resp = MessagingResponse()
 
         # Determine the right reply for this message
-        if body["Body"] == "hello":
+        if body["Body"] == "hello":  # need to change
             resp.message("Hi!")
         elif body["Body"] == "bye":
             resp.message("Goodbye")
