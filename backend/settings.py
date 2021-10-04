@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
+from dotenv import load_dotenv
+import django_heroku
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,24 +26,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-mri7-8--qgvrp3n*+nsaqd=hyc59)3@htyri-z4oniicnik^0$"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # Twilio credentials and phone number
-TWILIO_ACCOUNT_SID = (
-    "AC5bd587634030a1a94c185c7d655ce92e"  # obtained from twilio.com/console
-)
-TWILIO_AUTH_TOKEN = (
-    "5f23e0bef38b4930b77deb2aebc25363"  # also obtained from twilio.com/console
-)
-TWILIO_NUMBER = (
-    "+17472236135"  # use the number you received when signing up or buy a new number
-)
+TWILIO_ACCOUNT_SID = os.environ.get("TWILLIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.environ.get("TWILLIO_AUTH_TOKEN")
+TWILIO_NUMBER = os.environ.get("TWILLIO_AUTH_TOKEN")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [".ngrok.io", "127.0.0.1"]
+
+ALLOWED_HOSTS = ["*"]
+
 
 
 # Application definition
@@ -62,6 +64,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -95,14 +98,9 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "itrabaho_db",
-        "USER": "itrabaho",
-        "PASSWORD": "password",
-        "HOST": "localhost",
-        "PORT": "",
-    }
+    "default": dj_database_url.config(
+        default="postgres://postgres@localhost/itrabaho_db"
+    )
 }
 
 
@@ -152,3 +150,6 @@ STATIC_URL = "/static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Activate Django-Heroku.
+django_heroku.settings(locals())
