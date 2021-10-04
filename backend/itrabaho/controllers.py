@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate
 from django.db.models import query
+from django.http.response import HttpResponse
 from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
@@ -8,6 +9,8 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
 from backend.itrabaho import models, serializers
+
+from twilio.twiml.messaging_response import MessagingResponse
 
 
 class LoginController(viewsets.GenericViewSet):
@@ -53,6 +56,27 @@ class LoginController(viewsets.GenericViewSet):
 
     def checkUserExist(self, phoneNumber):
         return models.UserModel.objects.filter(phoneNumber=phoneNumber)
+
+    @action(
+        url_path="sms",
+        methods=["POST"],
+        detail=False,
+    )
+    def incoming_sms(self, request):
+        """Send a dynamic reply to an incoming text message"""
+        # Get the message the user sent our Twilio number
+        body = request.data
+
+        # Start our TwiML response
+        resp = MessagingResponse()
+
+        # Determine the right reply for this message
+        if body["Body"] == "hello":  # need to change
+            resp.message("Hi!")
+        elif body["Body"] == "bye":
+            resp.message("Goodbye")
+
+        return HttpResponse(str(resp))
 
 
 class ApplicantController(viewsets.GenericViewSet):
