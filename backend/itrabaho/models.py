@@ -30,8 +30,8 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     lastName = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     phoneNumber = models.CharField(max_length=MOBILE_NUMBER_MAX_LENGTH, unique=True)
     sex = models.CharField(max_length=1, choices=SexChoices.choices)
-    birthDate = models.DateField(blank=True, null=True, default=datetime.date.today)
-    lastLogin = models.DateField(null=True, blank=True, default=datetime.date.today)
+    birthDate = models.DateField(blank=True, null=True)
+    lastLogin = models.DateField(null=True, blank=True)
 
     userType = models.CharField(
         max_length=1, choices=UserTypeChoices.choices, null=True, blank=True
