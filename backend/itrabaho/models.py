@@ -18,6 +18,7 @@ from backend.itrabaho.choices import (
     JobPostStatusChoices,
     SexChoices,
     StatusChoices,
+    UserTypeChoices,
 )
 
 
@@ -32,12 +33,19 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     birthDate = models.DateField(blank=True, null=True)
     lastLogin = models.DateField(null=True, blank=True)
 
+    userType = models.CharField(
+        max_length=1, choices=UserTypeChoices.choices, null=True, blank=True
+    )
+
     objects = managers.UserManager()
 
     USERNAME_FIELD = "phoneNumber"
 
+    def getFullName(self):
+        return f"{self.firstName} {self.lastName}"
+
     def __str__(self):
-        return f"{self.phoneNumber} - {self.lastName}, {self.firstName}"
+        return f"{self.id} - {self.lastName}, {self.firstName}"
 
     class Meta:
         verbose_name = "User"

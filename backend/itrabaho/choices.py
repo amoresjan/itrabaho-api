@@ -34,3 +34,9 @@ class JobPostStatusChoices(TextChoices):
     HIRING = ("H", "Hiring")
     ACTIVE = ("A", "Active")
     DONE = ("D", "Done")
+
+
+class UserTypeChoices(TextChoices):
+    RECRUITER = ("R", "Recruiter")
+    APPLICANT = ("A", "Applicant")
+    LGUREPRESENTATIVE = ("L", "LGU Representative")
