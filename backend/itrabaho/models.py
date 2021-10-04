@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models.base import Model
+from twilio.rest import Client
 
 from backend.globals import (
     DEFAULT_MAX_LENGTH,
@@ -9,7 +11,7 @@ from backend.globals import (
     MOBILE_NUMBER_MAX_LENGTH,
     SMALL_MAX_LENGTH,
 )
-from backend.itrabaho import managers
+from backend.itrabaho import choices, managers
 from backend.itrabaho.choices import (
     AcademicLevelChoices,
     ActivityTypeChoices,
@@ -35,7 +37,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = "phoneNumber"
 
     def __str__(self):
-        return f"{self.id} - {self.lastName}, {self.firstName}"
+        return f"{self.phoneNumber} - {self.lastName}, {self.firstName}"
 
     class Meta:
         verbose_name = "User"
