@@ -11,7 +11,7 @@ CREATE DATABASE itrabaho_db;
 ```
 
 ```sql
-CREATE USER postgres WITH PASSWORD 'password';
+CREATE USER itrabaho WITH PASSWORD 'password';
 ```
 
 ```sql
