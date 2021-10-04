@@ -32,14 +32,7 @@ class ApplicantsModelSerializer(serializers.ModelSerializer):
 class JobPostModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.JobPostModel
-        fields = [
-            "id",
-            "last_login",
-            "firstName",
-            "lastName",
-            "phoneNumber",
-            "userType",
-        ]
+        fields = "__all__"
 
 
 class RecruiterModelSerializer(serializers.ModelSerializer):
@@ -58,11 +51,4 @@ class RecruiterModelSerializer(serializers.ModelSerializer):
 class ReviewModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReviewModel
-        fields = [
-            "id",
-            "last_login",
-            "firstName",
-            "lastName",
-            "phoneNumber",
-            "userType",
-        ]
+        fields = "__all__"
