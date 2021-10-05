@@ -45,3 +45,17 @@ cd path/to/itrabaho-api
 ```bash
 poetry install
 ```
+
+Activate Poetry
+
+```bash
+poetry shell
+```
+
+### Generate Data
+
+Generate data from `data.json` (based on your local storage)
+
+```bash
+python3 manage.py dumpdata -e contenttypes -e auth.Permission -o data.json
+```
