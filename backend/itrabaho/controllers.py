@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from django.db.models import query
 from django.http.response import HttpResponse
-from django.utils import timezone
+from datetime import date
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -42,7 +42,7 @@ class LoginController(viewsets.GenericViewSet):
         return isinstance(user, models.LGURepresentativeModel)
 
     def updateLastLogin(self, user):
-        user.lastLogin = timezone.now()
+        user.lastLogin = date.today()
         user.save(update_fields=["last_login"])
 
     def isRecruiter(self, user):

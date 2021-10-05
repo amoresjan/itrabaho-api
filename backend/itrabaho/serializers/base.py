@@ -6,27 +6,13 @@ from backend.itrabaho import models
 class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.UserModel
-        fields = [
-            "id",
-            "last_login",
-            "firstName",
-            "lastName",
-            "phoneNumber",
-            "userType",
-        ]
+        fields = "__all__"
 
 
 class ApplicantsModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ApplicantModel
-        fields = [
-            "id",
-            "last_login",
-            "firstName",
-            "lastName",
-            "phoneNumber",
-            "userType",
-        ]
+        fields = "__all__"
 
 
 class JobPostModelSerializer(serializers.ModelSerializer):
@@ -38,14 +24,7 @@ class JobPostModelSerializer(serializers.ModelSerializer):
 class RecruiterModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.RecruiterModel
-        fields = [
-            "id",
-            "last_login",
-            "firstName",
-            "lastName",
-            "phoneNumber",
-            "userType",
-        ]
+        fields = "__all__"
 
 
 class ReviewModelSerializer(serializers.ModelSerializer):
