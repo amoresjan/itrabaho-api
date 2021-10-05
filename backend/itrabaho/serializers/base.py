@@ -4,12 +4,16 @@ from backend.itrabaho import models
 
 
 class UserModelSerializer(serializers.ModelSerializer):
+    fullName = serializers.CharField(source="getFullName")
+
     class Meta:
         model = models.UserModel
         fields = "__all__"
 
 
 class ApplicantsModelSerializer(serializers.ModelSerializer):
+    fullName = serializers.CharField(source="getFullName")
+
     class Meta:
         model = models.ApplicantModel
         fields = "__all__"
@@ -22,6 +26,8 @@ class JobPostModelSerializer(serializers.ModelSerializer):
 
 
 class RecruiterModelSerializer(serializers.ModelSerializer):
+    fullName = serializers.CharField(source="getFullName")
+
     class Meta:
         model = models.RecruiterModel
         fields = "__all__"
