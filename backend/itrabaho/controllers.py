@@ -331,3 +331,39 @@ class ReviewController(viewsets.GenericViewSet):
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
+
+
+class ActivityFeedController(viewsets.GenericViewSet):
+    serializer_class = serializers.base.ActivityModelSerializer
+    queryset = models.ActivityModel.objects
+
+    def get_queryset(self):
+        serializer = serializers.query.ActivityQuerySerializer(
+            data=self.request.query_params
+        )
+
+        queryset = self.queryset
+        if not serializer.is_valid(raise_exception=True):
+            return queryset.all()
+
+        if user := serializer.validated_data.get("applicant"):
+            queryset = queryset.filter(userId=user)
+
+        return queryset.all()
+
+    @action(url_path="activity", methods=["GET"], detail=False)
+    def getActivity(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        print(queryset)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = serializers.response.GetActivityResponseSerializer(
+                page, many=True
+            )
+            return self.get_paginated_response(serializer.data)
+
+        serializer = serializers.response.GetActivityResponseSerializer(
+            queryset, many=True
+        )
+        return Response(serializer.data)

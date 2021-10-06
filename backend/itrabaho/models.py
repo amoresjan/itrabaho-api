@@ -56,12 +56,20 @@ class LGURepresentativeModel(UserModel):
     city = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     province = models.CharField(max_length=DEFAULT_MAX_LENGTH)
 
+    def save(self, *args, **kwargs):
+        self.userType = "L"
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "LGU Representative"
 
 
 class RecruiterModel(UserModel):
     address = models.CharField(max_length=LONG_MAX_LENGTH)
+
+    def save(self, *args, **kwargs):
+        self.userType = "R"
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Recruiter"
@@ -106,6 +114,10 @@ class ExperienceDetailModel(models.Model):
 class ApplicantModel(UserModel):
     address = models.CharField(max_length=LONG_MAX_LENGTH)
     status = models.CharField(max_length=1, choices=StatusChoices.choices)
+
+    def save(self, *args, **kwargs):
+        self.userType = "A"
+        super().save(*args, **kwargs)
 
     # Foreign Keys
     LGURepresentativeId = models.ForeignKey(
@@ -158,6 +170,9 @@ class ReviewModel(models.Model):
         UserModel, on_delete=models.CASCADE, related_name="+"
     )
     toUserId = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name="+")
+    jobPostId = models.ForeignKey(
+        JobPostModel, on_delete=models.CASCADE, null=True, blank=True
+    )
 
     class Meta:
         verbose_name = "Review"
@@ -166,15 +181,28 @@ class ReviewModel(models.Model):
 class ActivityModel(models.Model):
     type = models.CharField(max_length=1, choices=ActivityTypeChoices.choices)
     datetimeCreated = models.DateTimeField(auto_now_add=True)
-    label = models.CharField(max_length=LONG_MAX_LENGTH)
-    contentType = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     objectId = models.PositiveSmallIntegerField()
-    contentObject = GenericForeignKey("contentType", "objectId")
 
     # Foreign Keys
-    applicant = models.ForeignKey(ApplicantModel, on_delete=models.CASCADE)
-    recruiter = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
+    userId = models.ForeignKey(
+        UserModel, on_delete=models.CASCADE, null=True, blank=True
+    )
+    contentType = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    contentObject = GenericForeignKey("contentType", "objectId")
 
     class Meta:
         verbose_name = "Activity"
         verbose_name_plural = "Activities"
+
+
+class MatchModel(models.Model):
+    rank = models.PositiveSmallIntegerField()
+    percentage = models.PositiveSmallIntegerField()
+
+    # Foreign Keys
+    jobPostId = models.ForeignKey(JobPostModel, on_delete=models.CASCADE)
+    applicantId = models.ForeignKey(ApplicantModel, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Match"
+        verbose_name_plural = "Matches"
