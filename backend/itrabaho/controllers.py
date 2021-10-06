@@ -266,7 +266,7 @@ class SignUpController(viewsets.GenericViewSet):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        user = models.UserModel.objects.create_user(
+        user = models.RecruiterModel.objects.create_user(
             phoneNumber=phoneNumber,
             password=password,
             firstName=firstName,
