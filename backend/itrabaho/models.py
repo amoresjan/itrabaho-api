@@ -121,7 +121,9 @@ class JobPostModel(models.Model):
     barangay = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     city = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     province = models.CharField(max_length=DEFAULT_MAX_LENGTH)
-    status = models.CharField(max_length=1, choices=JobPostStatusChoices.choices)
+    status = models.CharField(
+        max_length=1, choices=JobPostStatusChoices.choices, null=True, blank=True
+    )
     description = models.CharField(max_length=LONG_MAX_LENGTH)
     role = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     datetimeCreated = models.DateTimeField(auto_now_add=True)
@@ -129,6 +131,10 @@ class JobPostModel(models.Model):
 
     # Foreign Keys
     recruiterId = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        self.status = "H"
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Job Model"
