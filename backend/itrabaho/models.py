@@ -122,7 +122,9 @@ class JobPostModel(models.Model):
     city = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     province = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     status = models.CharField(
-        max_length=1, choices=JobPostStatusChoices.choices, null=True, blank=True
+        max_length=1,
+        choices=JobPostStatusChoices.choices,
+        default=JobPostStatusChoices.HIRING,
     )
     description = models.CharField(max_length=LONG_MAX_LENGTH)
     role = models.CharField(max_length=DEFAULT_MAX_LENGTH)
@@ -131,10 +133,12 @@ class JobPostModel(models.Model):
 
     # Foreign Keys
     recruiterId = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
+    recruit = models.ForeignKey(
+        ApplicantModel, on_delete=models.CASCADE, null=True, blank=True
+    )
 
-    def save(self, *args, **kwargs):
-        self.status = "H"
-        super().save(*args, **kwargs)
+    def __str__(self) -> str:
+        return self.status
 
     class Meta:
         verbose_name = "Job Model"
