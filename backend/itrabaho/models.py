@@ -133,7 +133,7 @@ class JobPostModel(models.Model):
 
     # Foreign Keys
     recruiterId = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
-    recruit = models.ForeignKey(
+    recruitId = models.ForeignKey(
         ApplicantModel, on_delete=models.CASCADE, null=True, blank=True
     )
 

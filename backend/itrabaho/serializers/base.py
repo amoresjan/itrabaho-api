@@ -29,9 +29,7 @@ class RecruiterModelSerializer(serializers.ModelSerializer):
 
 class JobPostModelSerializer(serializers.ModelSerializer):
     recruiter = RecruiterModelSerializer(read_only=True, source="recruiterId")
-    recruit = ApplicantsModelSerializer(
-        read_only=True,
-    )
+    recruit = ApplicantsModelSerializer(read_only=True, source="recruitId")
 
     class Meta:
         model = models.JobPostModel
