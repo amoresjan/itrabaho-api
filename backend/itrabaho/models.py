@@ -45,7 +45,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
         return f"{self.firstName} {self.lastName}"
 
     def __str__(self):
-        return f"{self.id} - {self.lastName}, {self.firstName}"
+        return f"{self.id} - {self.userType} - {self.lastName}, {self.firstName}"
 
     class Meta:
         verbose_name = "User"
@@ -128,13 +128,31 @@ class ApplicantModel(UserModel):
         verbose_name = "Applicant"
 
 
+class ReviewModel(models.Model):
+    rate = models.PositiveSmallIntegerField()
+    comment = models.CharField(max_length=LONG_MAX_LENGTH, null=True, blank=True)
+
+    # Foreign Keys
+    fromUserId = models.ForeignKey(
+        UserModel, on_delete=models.CASCADE, related_name="+"
+    )
+    toUserId = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name="+")
+
+    class Meta:
+        verbose_name = "Review"
+
+
 class JobPostModel(models.Model):
     street = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     barangay = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     city = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     province = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     status = models.CharField(
-        max_length=1, choices=JobPostStatusChoices.choices, null=True, blank=True
+        max_length=1,
+        choices=JobPostStatusChoices.choices,
+        null=True,
+        blank=True,
+        default=JobPostStatusChoices.HIRING,
     )
     description = models.CharField(max_length=LONG_MAX_LENGTH)
     role = models.CharField(max_length=DEFAULT_MAX_LENGTH)
@@ -142,11 +160,20 @@ class JobPostModel(models.Model):
     title = models.CharField(max_length=DEFAULT_MAX_LENGTH)
 
     # Foreign Keys
+    applicantId = models.ForeignKey(
+        ApplicantModel, on_delete=models.CASCADE, null=True, blank=True
+    )
     recruiterId = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
-
-    def save(self, *args, **kwargs):
-        self.status = "H"
-        super().save(*args, **kwargs)
+    applicantReviewId = models.OneToOneField(
+        ReviewModel, on_delete=models.CASCADE, null=True, blank=True, related_name="job"
+    )
+    recruiterReviewId = models.OneToOneField(
+        ReviewModel,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="my_job_post",
+    )
 
     class Meta:
         verbose_name = "Job Model"
@@ -161,34 +188,17 @@ class ApplicantsListModel(models.Model):
         verbose_name = "ApplicantsList"
 
 
-class ReviewModel(models.Model):
-    rate = models.PositiveSmallIntegerField()
-    comment = models.CharField(max_length=LONG_MAX_LENGTH, null=True, blank=True)
-
-    # Foreign Keys
-    fromUserId = models.ForeignKey(
-        UserModel, on_delete=models.CASCADE, related_name="+"
-    )
-    toUserId = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name="+")
-    jobPostId = models.ForeignKey(
-        JobPostModel, on_delete=models.CASCADE, null=True, blank=True
-    )
-
-    class Meta:
-        verbose_name = "Review"
-
-
 class ActivityModel(models.Model):
     type = models.CharField(max_length=1, choices=ActivityTypeChoices.choices)
     datetimeCreated = models.DateTimeField(auto_now_add=True)
     objectId = models.PositiveSmallIntegerField()
 
     # Foreign Keys
-    userId = models.ForeignKey(
-        UserModel, on_delete=models.CASCADE, null=True, blank=True
-    )
     contentType = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     contentObject = GenericForeignKey("contentType", "objectId")
+
+    def __str__(self):
+        return f"{self.id} - {self.contentObject}"
 
     class Meta:
         verbose_name = "Activity"
