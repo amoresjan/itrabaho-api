@@ -176,7 +176,7 @@ class JobPostModel(models.Model):
     )
 
     def __str__(self) -> str:
-        return self.status
+        return f"{self.id} / recruiterId: {self.recruiterId_id} / { self.status }"
 
     class Meta:
         verbose_name = "Job Model"
