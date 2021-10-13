@@ -175,6 +175,9 @@ class JobPostModel(models.Model):
         related_name="my_job_post",
     )
 
+    def __str__(self) -> str:
+        return self.status
+
     class Meta:
         verbose_name = "Job Model"
 

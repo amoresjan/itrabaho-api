@@ -193,7 +193,6 @@ class JobPostController(
             headers = {"Location": str(serializer.data[api_settings.URL_FIELD_NAME])}
         except (TypeError, KeyError):
             headers = {}
-
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
