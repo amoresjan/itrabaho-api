@@ -199,7 +199,7 @@ class JobPostController(
 
     @action(url_path="recruiter", methods=["GET"], detail=True)
     def getJobPostsByRecruiter(self, request, pk=None):
-        queryset = models.JobPostModel.objects.filter(recruiterId=pk)
+        queryset = self.filter_queryset(self.get_queryset()).filter(recruiterId=pk)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
