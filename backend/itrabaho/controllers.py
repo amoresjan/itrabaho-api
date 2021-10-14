@@ -138,9 +138,7 @@ class ApplicantController(viewsets.GenericViewSet):
         return Response(serializer.data)
 
 
-class JobPostController(
-    viewsets.GenericViewSet,
-):
+class JobPostController(viewsets.GenericViewSet):
     serializer_class = serializers.base.JobPostModelSerializer
     queryset = models.JobPostModel.objects
 
@@ -239,6 +237,14 @@ class JobPostController(
     def getJobPostById(self, request, *args, **kwargs):
         return self.sendUserResponseData(self.get_object())
 
+    def update_job_post(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return instance
+
     @swagger_auto_schema(
         responses={
             200: serializers.base.JobPostModelSerializer(),
@@ -246,7 +252,7 @@ class JobPostController(
     )
     @action(url_path="accept", methods=["PATCH"], detail=True)
     def acceptJobPost(self, request, pk=None):
-        jobPost = models.JobPostModel.objects.get(id=pk)
+        jobPost = self.update_job_post(request)
         jobPost.status = choices.JobPostStatusChoices.ACTIVE
         jobPost.save()
 
@@ -256,7 +262,7 @@ class JobPostController(
             objectId=pk,
         )
 
-        return self.sendUserResponseData(self.get_object())
+        return self.sendUserResponseData(jobPost)
 
 
 class SignUpController(viewsets.GenericViewSet):
