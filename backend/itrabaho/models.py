@@ -45,7 +45,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
         return f"{self.firstName} {self.lastName}"
 
     def __str__(self):
-        return f"{self.id} - {self.lastName}, {self.firstName}"
+        return f"{self.id} - {self.userType} - {self.lastName}, {self.firstName}"
 
     class Meta:
         verbose_name = "User"
@@ -56,12 +56,20 @@ class LGURepresentativeModel(UserModel):
     city = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     province = models.CharField(max_length=DEFAULT_MAX_LENGTH)
 
+    def save(self, *args, **kwargs):
+        self.userType = "L"
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "LGU Representative"
 
 
 class RecruiterModel(UserModel):
     address = models.CharField(max_length=LONG_MAX_LENGTH)
+
+    def save(self, *args, **kwargs):
+        self.userType = "R"
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Recruiter"
@@ -107,6 +115,10 @@ class ApplicantModel(UserModel):
     address = models.CharField(max_length=LONG_MAX_LENGTH)
     status = models.CharField(max_length=1, choices=StatusChoices.choices)
 
+    def save(self, *args, **kwargs):
+        self.userType = "A"
+        super().save(*args, **kwargs)
+
     # Foreign Keys
     LGURepresentativeId = models.ForeignKey(
         LGURepresentativeModel, on_delete=models.CASCADE
@@ -114,43 +126,6 @@ class ApplicantModel(UserModel):
 
     class Meta:
         verbose_name = "Applicant"
-
-
-class JobPostModel(models.Model):
-    street = models.CharField(max_length=DEFAULT_MAX_LENGTH)
-    barangay = models.CharField(max_length=DEFAULT_MAX_LENGTH)
-    city = models.CharField(max_length=DEFAULT_MAX_LENGTH)
-    province = models.CharField(max_length=DEFAULT_MAX_LENGTH)
-    status = models.CharField(
-        max_length=1,
-        choices=JobPostStatusChoices.choices,
-        default=JobPostStatusChoices.HIRING,
-    )
-    description = models.CharField(max_length=LONG_MAX_LENGTH)
-    role = models.CharField(max_length=DEFAULT_MAX_LENGTH)
-    datetimeCreated = models.DateTimeField(auto_now_add=True)
-    title = models.CharField(max_length=DEFAULT_MAX_LENGTH)
-
-    # Foreign Keys
-    recruiterId = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
-    recruitId = models.ForeignKey(
-        ApplicantModel, on_delete=models.CASCADE, null=True, blank=True
-    )
-
-    def __str__(self) -> str:
-        return self.status
-
-    class Meta:
-        verbose_name = "Job Model"
-
-
-class ApplicantsListModel(models.Model):
-    # Foreign Keys
-    jobPostId = models.ForeignKey(JobPostModel, on_delete=models.CASCADE)
-    applicantId = models.ForeignKey(ApplicantModel, on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = "ApplicantsList"
 
 
 class ReviewModel(models.Model):
@@ -167,18 +142,80 @@ class ReviewModel(models.Model):
         verbose_name = "Review"
 
 
+class JobPostModel(models.Model):
+    street = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    barangay = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    city = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    province = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    status = models.CharField(
+        max_length=1,
+        choices=JobPostStatusChoices.choices,
+        null=True,
+        blank=True,
+        default=JobPostStatusChoices.HIRING,
+    )
+    description = models.CharField(max_length=LONG_MAX_LENGTH)
+    role = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    datetimeCreated = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+
+    # Foreign Keys
+    applicantId = models.ForeignKey(
+        ApplicantModel, on_delete=models.CASCADE, null=True, blank=True
+    )
+    recruiterId = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
+    applicantReviewId = models.OneToOneField(
+        ReviewModel, on_delete=models.CASCADE, null=True, blank=True, related_name="job"
+    )
+    recruiterReviewId = models.OneToOneField(
+        ReviewModel,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="my_job_post",
+    )
+
+    def __str__(self) -> str:
+        return f"{self.id} / recruiterId: {self.recruiterId_id} / { self.status }"
+
+    class Meta:
+        verbose_name = "Job Model"
+
+
+class ApplicantsListModel(models.Model):
+    # Foreign Keys
+    jobPostId = models.ForeignKey(JobPostModel, on_delete=models.CASCADE)
+    applicantId = models.ForeignKey(ApplicantModel, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "ApplicantsList"
+
+
 class ActivityModel(models.Model):
     type = models.CharField(max_length=1, choices=ActivityTypeChoices.choices)
     datetimeCreated = models.DateTimeField(auto_now_add=True)
-    label = models.CharField(max_length=LONG_MAX_LENGTH)
-    contentType = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     objectId = models.PositiveSmallIntegerField()
-    contentObject = GenericForeignKey("contentType", "objectId")
 
     # Foreign Keys
-    applicant = models.ForeignKey(ApplicantModel, on_delete=models.CASCADE)
-    recruiter = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
+    contentType = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    contentObject = GenericForeignKey("contentType", "objectId")
+
+    def __str__(self):
+        return f"{self.id} - {self.contentObject}"
 
     class Meta:
         verbose_name = "Activity"
         verbose_name_plural = "Activities"
+
+
+class MatchModel(models.Model):
+    rank = models.PositiveSmallIntegerField()
+    percentage = models.PositiveSmallIntegerField()
+
+    # Foreign Keys
+    jobPostId = models.ForeignKey(JobPostModel, on_delete=models.CASCADE)
+    applicantId = models.ForeignKey(ApplicantModel, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Match"
+        verbose_name_plural = "Matches"

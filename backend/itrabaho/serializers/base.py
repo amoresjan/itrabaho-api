@@ -29,7 +29,7 @@ class RecruiterModelSerializer(serializers.ModelSerializer):
 
 class JobPostModelSerializer(serializers.ModelSerializer):
     recruiter = RecruiterModelSerializer(read_only=True, source="recruiterId")
-    recruit = ApplicantsModelSerializer(read_only=True, source="recruitId")
+    recruit = ApplicantsModelSerializer(read_only=True, source="applicantId")
 
     class Meta:
         model = models.JobPostModel
@@ -39,4 +39,16 @@ class JobPostModelSerializer(serializers.ModelSerializer):
 class ReviewModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReviewModel
+        fields = "__all__"
+
+
+class ActivityModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ActivityModel
+        fields = "__all__"
+
+
+class MatchModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.MatchModel
         fields = "__all__"

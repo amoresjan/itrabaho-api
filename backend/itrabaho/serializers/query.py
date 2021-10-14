@@ -19,3 +19,7 @@ class JobPostQuerySerializer(serializers.Serializer):
     role = serializers.CharField(required=False)
     title = serializers.CharField(required=False)
     recruiter = serializers.IntegerField(required=False)
+
+
+class ActivityQuerySerializer(serializers.Serializer):
+    user = serializers.CharField(required=False)
