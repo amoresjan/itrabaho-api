@@ -1,4 +1,6 @@
 from django.contrib.auth import authenticate
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 from django.http.response import HttpResponse
 from datetime import date
 from drf_yasg.utils import swagger_auto_schema
@@ -7,7 +9,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
-from backend.itrabaho import models, serializers
+from backend.itrabaho import models, serializers, choices
 
 from twilio.twiml.messaging_response import MessagingResponse
 
@@ -201,7 +203,7 @@ class JobPostController(
 
     @action(url_path="recruiter", methods=["GET"], detail=True)
     def getJobPostsByRecruiter(self, request, pk=None):
-        queryset = models.JobPostModel.objects.filter(recruiterId=pk)
+        queryset = self.filter_queryset(self.get_queryset()).filter(recruiterId=pk)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -235,6 +237,25 @@ class JobPostController(
     )
     @action(url_path="get", methods=["GET"], detail=True)
     def getJobPostById(self, request, *args, **kwargs):
+        return self.sendUserResponseData(self.get_object())
+
+    @swagger_auto_schema(
+        responses={
+            200: serializers.base.JobPostModelSerializer(),
+        }
+    )
+    @action(url_path="accept", methods=["PATCH"], detail=True)
+    def acceptJobPost(self, request, pk=None):
+        jobPost = models.JobPostModel.objects.get(id=pk)
+        jobPost.status = choices.JobPostStatusChoices.ACTIVE
+        jobPost.save()
+
+        models.ActivityModel.objects.create(
+            type=choices.ActivityTypeChoices.ACCEPTED,
+            contentType=ContentType.objects.get_for_model(models.JobPostModel),
+            objectId=pk,
+        )
+
         return self.sendUserResponseData(self.get_object())
 
 
@@ -328,9 +349,111 @@ class ReviewController(viewsets.GenericViewSet):
             headers = {"Location": str(serializer.data[api_settings.URL_FIELD_NAME])}
         except (TypeError, KeyError):
             headers = {}
+
+        models.ActivityModel.objects.create(
+            type=choices.ActivityTypeChoices.REVIEW,
+            contentType=ContentType.objects.get_for_model(models.ReviewModel),
+            objectId=serializer.data["id"],
+        )
+
         return self.sendReviewResponseData(serializer, headers)
 
     def sendReviewResponseData(self, serializer, headers):
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
+
+
+class ActivityFeedController(viewsets.GenericViewSet):
+    serializer_class = serializers.base.ActivityModelSerializer
+    queryset = models.ActivityModel.objects
+
+    def get_queryset(self):
+        serializer = serializers.query.ActivityQuerySerializer(
+            data=self.request.query_params
+        )
+
+        queryset = self.queryset
+        if not serializer.is_valid(raise_exception=True):
+            return queryset.all()
+
+        if user := serializer.validated_data.get("user"):
+            try:
+                recruiter = models.RecruiterModel.objects.get(id=user)
+            except models.RecruiterModel.DoesNotExist:
+                recruiter = None
+
+            if recruiter is not None:
+                queryset = queryset.filter(
+                    Q(
+                        contentType=ContentType.objects.get_for_model(
+                            models.MatchModel
+                        ),
+                        objectId__in=models.MatchModel.objects.filter(
+                            jobPostId__recruiterId=user
+                        ),
+                    )
+                    | Q(
+                        contentType=ContentType.objects.get_for_model(
+                            models.JobPostModel
+                        ),
+                        objectId__in=models.JobPostModel.objects.filter(
+                            recruiterId=user, status=choices.JobPostStatusChoices.ACTIVE
+                        ),
+                    )
+                    | Q(
+                        contentType=ContentType.objects.get_for_model(
+                            models.ReviewModel
+                        ),
+                        objectId__in=models.ReviewModel.objects.filter(toUserId=user),
+                    )
+                )
+            else:
+                applicants = models.ApplicantModel.objects.filter(
+                    LGURepresentativeId=user
+                )
+                queryset = queryset.filter(
+                    Q(
+                        contentType=ContentType.objects.get_for_model(
+                            models.MatchModel
+                        ),
+                        objectId__in=models.MatchModel.objects.filter(
+                            applicantId__in=applicants
+                        ),
+                    )
+                    | Q(
+                        contentType=ContentType.objects.get_for_model(
+                            models.JobPostModel
+                        ),
+                        objectId__in=models.JobPostModel.objects.filter(
+                            applicantId__in=applicants,
+                            status=choices.JobPostStatusChoices.ACTIVE,
+                        ),
+                    )
+                    | Q(
+                        contentType=ContentType.objects.get_for_model(
+                            models.ReviewModel
+                        ),
+                        objectId__in=models.ReviewModel.objects.filter(
+                            Q(toUserId__in=applicants) | Q(fromUserId__in=applicants)
+                        ),
+                    )
+                )
+
+        return queryset.all()
+
+    @action(url_path="activity", methods=["GET"], detail=False)
+    def getActivity(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = serializers.response.GetActivityResponseSerializer(
+                page, many=True
+            )
+            return self.get_paginated_response(serializer.data)
+
+        serializer = serializers.response.GetActivityResponseSerializer(
+            queryset, many=True
+        )
+        return Response(serializer.data)
