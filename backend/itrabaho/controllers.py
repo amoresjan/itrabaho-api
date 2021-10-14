@@ -120,7 +120,8 @@ class ApplicantController(viewsets.GenericViewSet):
     @swagger_auto_schema(
         responses={
             200: serializers.base.ApplicantsModelSerializer(many=True),
-        }
+        },
+        query_serializer=serializers.query.ApplicantQuerySerializer,
     )
     @action(url_path="list", methods=["GET"], detail=False)
     def getApplicants(self, request, *args, **kwargs):
