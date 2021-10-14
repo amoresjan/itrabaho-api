@@ -138,7 +138,7 @@ class JobPostModel(models.Model):
     )
 
     def __str__(self) -> str:
-        return self.status
+        return f"{self.id} / {self.title} / recruiterId: {self.recruiterId_id} / { self.status }"
 
     class Meta:
         verbose_name = "Job Model"
@@ -151,6 +151,7 @@ class ApplicantsListModel(models.Model):
 
     class Meta:
         verbose_name = "ApplicantsList"
+        default_related_name = "job_applications"
 
 
 class ReviewModel(models.Model):

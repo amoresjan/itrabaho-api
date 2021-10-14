@@ -1,5 +1,4 @@
 from django.contrib.auth import authenticate
-from django.db.models import query
 from django.http.response import HttpResponse
 from datetime import date
 from drf_yasg.utils import swagger_auto_schema
@@ -91,6 +90,9 @@ class ApplicantController(viewsets.GenericViewSet):
         queryset = self.queryset
         if not serializer.is_valid(raise_exception=True):
             return queryset.all()
+
+        if jobPostId := serializer.validated_data.get("jobPostId"):
+            queryset = queryset.filter(job_applications__jobPostId=jobPostId)
 
         if status := serializer.validated_data.get("status"):
             queryset = queryset.filter(status=status)
