@@ -264,6 +264,19 @@ class JobPostController(viewsets.GenericViewSet):
 
         return self.sendUserResponseData(jobPost)
 
+    @swagger_auto_schema(
+        responses={
+            200: serializers.base.JobPostModelSerializer(),
+        }
+    )
+    @action(url_path="done", methods=["PATCH"], detail=True)
+    def doneJobPost(self, request, pk=None):
+        jobPost = self.update_job_post(request)
+        jobPost.status = choices.JobPostStatusChoices.DONE
+        jobPost.save()
+
+        return self.sendUserResponseData(jobPost)
+
 
 class SignUpController(viewsets.GenericViewSet):
     serializer_class = serializers.base.UserModelSerializer
