@@ -138,6 +138,9 @@ class ReviewModel(models.Model):
     )
     toUserId = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name="+")
 
+    def __str__(self) -> str:
+        return f"{self.id} / toID: {self.toUserId_id} / fromID: {self.fromUserId_id}"
+
     class Meta:
         verbose_name = "Review"
 
@@ -157,7 +160,7 @@ class JobPostModel(models.Model):
     description = models.CharField(max_length=LONG_MAX_LENGTH)
     role = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     datetimeCreated = models.DateTimeField(auto_now_add=True)
-    title = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    title = models.CharField(max_length=LONG_MAX_LENGTH)
 
     # Foreign Keys
     applicantId = models.ForeignKey(
@@ -202,7 +205,7 @@ class ActivityModel(models.Model):
     contentObject = GenericForeignKey("contentType", "objectId")
 
     def __str__(self):
-        return f"{self.id} - {self.contentObject}"
+        return f"{self.type} / {self.id} - {self.contentObject}"
 
     class Meta:
         verbose_name = "Activity"
