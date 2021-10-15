@@ -1,4 +1,7 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
+from backend.itrabaho.choices import UserTypeChoices
 
 
 class ApplicantQuerySerializer(serializers.Serializer):
@@ -21,3 +24,15 @@ class JobPostQuerySerializer(serializers.Serializer):
 
 class ActivityQuerySerializer(serializers.Serializer):
     user = serializers.CharField(required=False)
+
+
+VALID_REVIEW_USER_TYPES = [UserTypeChoices.RECRUITER, UserTypeChoices.APPLICANT]
+
+
+def validate_user_type(value: str):
+    if value not in VALID_REVIEW_USER_TYPES:
+        raise ValidationError("User type must be R or A.")
+
+
+class ReviewContextSerializer(serializers.Serializer):
+    fromUserType = serializers.CharField(validators=[validate_user_type])

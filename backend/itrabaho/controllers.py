@@ -361,7 +361,16 @@ class ReviewController(viewsets.GenericViewSet):
     @swagger_auto_schema(responses={200: serializers.base.ReviewModelSerializer()})
     @action(url_path="review", methods=["POST"], detail=False)
     def postReview(self, request):
-        serializer = self.get_serializer(data=request.data)
+        contextSerializer = serializers.query.ReviewContextSerializer(
+            data=request.query_params
+        )
+        contextSerializer.is_valid(raise_exception=True)
+
+        fromUserType = contextSerializer.validated_data.get("fromUserType")
+
+        serializer = self.get_serializer(
+            data=request.data, context={"fromUserType": fromUserType}
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         try:
