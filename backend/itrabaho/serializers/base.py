@@ -28,6 +28,14 @@ class RecruiterModelSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class LGURepresentativeModelSerializer(serializers.ModelSerializer):
+    fullName = serializers.CharField(source="getFullName")
+
+    class Meta:
+        model = models.LGURepresentativeModel
+        fields = "__all__"
+
+
 class ExperienceDetailModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ExperienceDetailModel
@@ -52,14 +60,6 @@ class ProfileModelSerializer(serializers.ModelSerializer):
 
     def get_highesteducationAttained(self, profile):
         return AcademicLevelChoices(profile.highesteducationAttained).label
-
-
-class ExtendedApplicantsModelSerializer(ApplicantsModelSerializer):
-    profile = ProfileModelSerializer(read_only=True)
-
-    class Meta:
-        model = models.ApplicantModel
-        fields = "__all__"
 
 
 class ReviewModelSerializer(serializers.ModelSerializer):
@@ -99,6 +99,28 @@ class JobPostModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.JobPostModel
+        fields = "__all__"
+
+
+class ExtendedApplicantsModelSerializer(ApplicantsModelSerializer):
+    class JobPostSerializer(serializers.ModelSerializer):
+        applicantReview = ReviewModelSerializer(
+            read_only=True, source="applicantReviewId"
+        )
+        recruiterReview = ReviewModelSerializer(
+            read_only=True, source="recruiterReviewId"
+        )
+
+        class Meta:
+            model = models.JobPostModel
+            fields = "__all__"
+
+    profile = ProfileModelSerializer(read_only=True)
+    rep = LGURepresentativeModelSerializer(read_only=True, source="LGURepresentativeId")
+    jobs = JobPostModelSerializer(many=True, read_only=True, source="accepted_jobs")
+
+    class Meta:
+        model = models.ApplicantModel
         fields = "__all__"
 
 

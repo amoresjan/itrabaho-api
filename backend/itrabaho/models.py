@@ -170,9 +170,15 @@ class JobPostModel(models.Model):
 
     # Foreign Keys
     applicantId = models.ForeignKey(
-        ApplicantModel, on_delete=models.CASCADE, null=True, blank=True
+        ApplicantModel,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="accepted_jobs",
     )
-    recruiterId = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
+    recruiterId = models.ForeignKey(
+        RecruiterModel, on_delete=models.CASCADE, related_name="posted_jobs"
+    )
     applicantReviewId = models.OneToOneField(
         ReviewModel, on_delete=models.CASCADE, null=True, blank=True, related_name="job"
     )
