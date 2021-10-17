@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from backend.itrabaho import models
-from backend.itrabaho.choices import UserTypeChoices
+from backend.itrabaho.choices import AcademicLevelChoices, UserTypeChoices
 
 
 class UserModelSerializer(serializers.ModelSerializer):
@@ -25,6 +25,40 @@ class RecruiterModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.RecruiterModel
+        fields = "__all__"
+
+
+class ExperienceDetailModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ExperienceDetailModel
+        fields = ["description"]
+
+
+class ExperienceModelSerializer(serializers.ModelSerializer):
+    details = ExperienceDetailModelSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.ExperienceModel
+        exclude = ["id", "profile"]
+
+
+class ProfileModelSerializer(serializers.ModelSerializer):
+    experiences = ExperienceModelSerializer(many=True, read_only=True)
+    highesteducationAttained = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.ProfileModel
+        exclude = ["id"]
+
+    def get_highesteducationAttained(self, profile):
+        return AcademicLevelChoices(profile.highesteducationAttained).label
+
+
+class ExtendedApplicantsModelSerializer(ApplicantsModelSerializer):
+    profile = ProfileModelSerializer(read_only=True)
+
+    class Meta:
+        model = models.ApplicantModel
         fields = "__all__"
 
 

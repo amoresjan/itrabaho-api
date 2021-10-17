@@ -16,12 +16,13 @@ class StatusChoices(TextChoices):
 
 class AcademicLevelChoices(TextChoices):
     NONE = ("N", "None")
-    GRADE_SCHOOL = ("G", "Grade School")
+    ELEMENTARY = ("E", "Elementary")
     HIGH_SCHOOL = ("H", "High School")
-    ASSOCIATE_DEGREE = ("A", "Associate Degree")
+    UNDER_GRAD = ("U", "College Undergraduate")
     BACHELORS_DEGREE = ("B", "Bachelor's Degree")
+    ASSOCIATE_DEGREE = ("A", "Associate Degree")
     MASTERS_DEGREE = ("M", "Master's Degree")
-    DOCTORATE = ("D", "Doctorate")
+    DOCTORATE = ("D", "Doctorate Degree")
 
 
 class ActivityTypeChoices(TextChoices):

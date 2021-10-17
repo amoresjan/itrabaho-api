@@ -117,7 +117,9 @@ class ApplicantController(viewsets.GenericViewSet):
     )
     @action(url_path="get", methods=["GET"], detail=True)
     def getApplicantById(self, request, *args, **kwargs):
-        return self.sendUserResponseData(self.get_object())
+        return Response(
+            serializers.base.ExtendedApplicantsModelSerializer(self.get_object()).data
+        )
 
     @swagger_auto_schema(
         responses={
@@ -136,6 +138,24 @@ class ApplicantController(viewsets.GenericViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    @swagger_auto_schema(
+        request_body=serializers.request.CreateApplicantRequestSerializer,
+    )
+    @action(url_path="create", methods=["POST"], detail=False)
+    def createApplicant(self, request, *args, **kwargs):
+        serializer = serializers.request.CreateApplicantRequestSerializer(
+            data=request.data
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        try:
+            headers = {"Location": str(serializer.data[api_settings.URL_FIELD_NAME])}
+        except (TypeError, KeyError):
+            headers = {}
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
 
 class JobPostController(viewsets.GenericViewSet):

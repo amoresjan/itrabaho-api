@@ -87,7 +87,7 @@ class ProfileModel(models.Model):
 
 class ExperienceModel(models.Model):
     role = models.CharField(max_length=DEFAULT_MAX_LENGTH)
-    company = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    company = models.CharField(max_length=DEFAULT_MAX_LENGTH, null=True, blank=True)
     location = models.CharField(max_length=LONG_MAX_LENGTH)
     startMonth = models.CharField(max_length=SMALL_MAX_LENGTH)
     startYear = models.CharField(max_length=SMALL_MAX_LENGTH)
@@ -95,7 +95,9 @@ class ExperienceModel(models.Model):
     endYear = models.CharField(max_length=SMALL_MAX_LENGTH)
 
     # Foreign Keys
-    profile = models.ForeignKey(ProfileModel, on_delete=models.CASCADE)
+    profile = models.ForeignKey(
+        ProfileModel, on_delete=models.CASCADE, related_name="experiences"
+    )
 
     class Meta:
         verbose_name = "Experience"
@@ -105,7 +107,9 @@ class ExperienceDetailModel(models.Model):
     description = models.CharField(max_length=LONG_MAX_LENGTH)
 
     # Foreign Keys
-    experience = models.ForeignKey(ExperienceModel, on_delete=models.CASCADE)
+    experience = models.ForeignKey(
+        ExperienceModel, on_delete=models.CASCADE, related_name="details"
+    )
 
     class Meta:
         verbose_name = "Experience Detail"
@@ -115,14 +119,15 @@ class ApplicantModel(UserModel):
     address = models.CharField(max_length=LONG_MAX_LENGTH)
     status = models.CharField(max_length=1, choices=StatusChoices.choices)
 
-    def save(self, *args, **kwargs):
-        self.userType = "A"
-        super().save(*args, **kwargs)
-
     # Foreign Keys
+    profile = models.OneToOneField(ProfileModel, on_delete=models.CASCADE)
     LGURepresentativeId = models.ForeignKey(
         LGURepresentativeModel, on_delete=models.CASCADE
     )
+
+    def save(self, *args, **kwargs):
+        self.userType = "A"
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Applicant"
