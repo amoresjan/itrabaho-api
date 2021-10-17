@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
+from django.utils import timezone
 from django.http.response import HttpResponse
 from datetime import date
 from drf_yasg.utils import swagger_auto_schema
@@ -293,6 +294,7 @@ class JobPostController(viewsets.GenericViewSet):
     def doneJobPost(self, request, pk=None):
         jobPost = self.update_job_post(request)
         jobPost.status = choices.JobPostStatusChoices.DONE
+        jobPost.datetimeEnded = timezone.now()
         jobPost.save()
 
         return self.sendUserResponseData(jobPost)
