@@ -3,6 +3,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.base import Model
+from django.db.models.deletion import CASCADE
 from twilio.rest import Client
 
 from backend.globals import (
@@ -219,3 +220,14 @@ class MatchModel(models.Model):
     class Meta:
         verbose_name = "Match"
         verbose_name_plural = "Matches"
+
+
+class CategoryModel(models.Model):
+    name = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+
+
+class SkillModel(models.Model):
+    name = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+
+    # Foreign Keys
+    categoryId = models.ForeignKey(CategoryModel, on_delete=models.CASCADE)
