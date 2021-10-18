@@ -116,6 +116,10 @@ class ExperienceDetailModel(models.Model):
         verbose_name = "Experience Detail"
 
 
+class SkillModel(models.Model):
+    name = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+
+
 class ApplicantModel(UserModel):
     address = models.CharField(max_length=LONG_MAX_LENGTH)
     status = models.CharField(max_length=1, choices=StatusChoices.choices)
@@ -125,6 +129,7 @@ class ApplicantModel(UserModel):
     LGURepresentativeId = models.ForeignKey(
         LGURepresentativeModel, on_delete=models.CASCADE
     )
+    skills = models.ManyToManyField(SkillModel)
 
     def save(self, *args, **kwargs):
         self.userType = "A"
@@ -168,6 +173,7 @@ class JobPostModel(models.Model):
     datetimeCreated = models.DateTimeField(auto_now_add=True)
     datetimeEnded = models.DateTimeField(null=True, blank=True)
     title = models.CharField(max_length=LONG_MAX_LENGTH)
+    skills = models.ManyToManyField(SkillModel)
 
     # Foreign Keys
     applicantId = models.ForeignKey(
@@ -236,14 +242,3 @@ class MatchModel(models.Model):
     class Meta:
         verbose_name = "Match"
         verbose_name_plural = "Matches"
-
-
-class CategoryModel(models.Model):
-    name = models.CharField(max_length=DEFAULT_MAX_LENGTH)
-
-
-class SkillModel(models.Model):
-    name = models.CharField(max_length=DEFAULT_MAX_LENGTH)
-
-    # Foreign Keys
-    categoryId = models.ForeignKey(CategoryModel, on_delete=models.CASCADE)
