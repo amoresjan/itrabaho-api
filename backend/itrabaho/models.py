@@ -168,7 +168,7 @@ class JobPostModel(models.Model):
         blank=True,
         default=JobPostStatusChoices.HIRING,
     )
-    description = models.CharField(max_length=LONG_MAX_LENGTH)
+    description = models.TextField()
     role = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     datetimeCreated = models.DateTimeField(auto_now_add=True)
     datetimeEnded = models.DateTimeField(null=True, blank=True)
