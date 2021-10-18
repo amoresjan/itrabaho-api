@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from backend.itrabaho import models, serializers as itrabahoSerializers
+from backend.itrabaho.choices import UserTypeChoices
 
 
 class GetActivityResponseSerializer(itrabahoSerializers.base.ActivityModelSerializer):
@@ -7,8 +8,12 @@ class GetActivityResponseSerializer(itrabahoSerializers.base.ActivityModelSerial
         class AcceptedActivitySerializer(
             itrabahoSerializers.base.JobPostModelSerializer
         ):
-            applicantId = itrabahoSerializers.base.ApplicantsModelSerializer()
-            recruiterId = itrabahoSerializers.base.RecruiterModelSerializer()
+            recruit = itrabahoSerializers.base.ApplicantsModelSerializer(
+                source="applicantId"
+            )
+            recruiter = itrabahoSerializers.base.RecruiterModelSerializer(
+                source="recruiterId"
+            )
             applicantReviewId = itrabahoSerializers.base.ReviewModelSerializer()
             recruiterReviewId = itrabahoSerializers.base.ReviewModelSerializer()
 
@@ -22,8 +27,8 @@ class GetActivityResponseSerializer(itrabahoSerializers.base.ActivityModelSerial
                     "description",
                     "role",
                     "title",
-                    "applicantId",
-                    "recruiterId",
+                    "recruit",
+                    "recruiter",
                     "applicantReviewId",
                     "recruiterReviewId",
                     "status",
@@ -31,13 +36,30 @@ class GetActivityResponseSerializer(itrabahoSerializers.base.ActivityModelSerial
                 ]
 
         class ReviewActivitySerializer(itrabahoSerializers.base.ReviewModelSerializer):
-            jobPost = itrabahoSerializers.base.JobPostModelSerializer(source="job")
-            toUserId = itrabahoSerializers.base.UserModelSerializer()
-            fromUserId = itrabahoSerializers.base.UserModelSerializer()
+            jobPost = serializers.SerializerMethodField()
+            toUser = itrabahoSerializers.base.UserModelSerializer(source="toUserId")
+            fromUser = itrabahoSerializers.base.UserModelSerializer(source="fromUserId")
 
             class Meta:
                 model = itrabahoSerializers.base.ReviewModelSerializer.Meta.model
-                fields = ["rate", "comment", "toUserId", "fromUserId", "jobPost"]
+                fields = ["rate", "comment", "toUser", "fromUser", "jobPost"]
+
+            def get_jobPost(self, reviewInstance):
+                # TODO: finish
+                # fromUserType = self.context.get("fromUserType")
+                fromUserType = UserTypeChoices.RECRUITER
+
+                job = None
+                if fromUserType == UserTypeChoices.RECRUITER:
+                    job = models.JobPostModel.objects.filter(
+                        recruiterReviewId=reviewInstance
+                    ).first()
+                else:
+                    job = models.JobPostModel.objects.filter(
+                        applicantReviewId=reviewInstance
+                    ).first()
+
+                return itrabahoSerializers.base.JobPostModelSerializer(job).data
 
         class MatchActivitySerializer(itrabahoSerializers.base.MatchModelSerializer):
             jobPostId = itrabahoSerializers.base.JobPostModelSerializer()

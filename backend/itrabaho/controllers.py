@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import query, Q
+from django.db.models import Q
+from django.utils import timezone
 from django.http.response import HttpResponse
 from datetime import date
 from drf_yasg.utils import swagger_auto_schema
@@ -93,6 +94,9 @@ class ApplicantController(viewsets.GenericViewSet):
         if not serializer.is_valid(raise_exception=True):
             return queryset.all()
 
+        if jobPostId := serializer.validated_data.get("jobPostId"):
+            queryset = queryset.filter(job_applications__jobPostId=jobPostId)
+
         if status := serializer.validated_data.get("status"):
             queryset = queryset.filter(status=status)
 
@@ -114,12 +118,15 @@ class ApplicantController(viewsets.GenericViewSet):
     )
     @action(url_path="get", methods=["GET"], detail=True)
     def getApplicantById(self, request, *args, **kwargs):
-        return self.sendUserResponseData(self.get_object())
+        return Response(
+            serializers.base.ExtendedApplicantsModelSerializer(self.get_object()).data
+        )
 
     @swagger_auto_schema(
         responses={
             200: serializers.base.ApplicantsModelSerializer(many=True),
-        }
+        },
+        query_serializer=serializers.query.ApplicantQuerySerializer,
     )
     @action(url_path="list", methods=["GET"], detail=False)
     def getApplicants(self, request, *args, **kwargs):
@@ -133,10 +140,26 @@ class ApplicantController(viewsets.GenericViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @swagger_auto_schema(
+        request_body=serializers.request.CreateApplicantRequestSerializer,
+    )
+    @action(url_path="create", methods=["POST"], detail=False)
+    def createApplicant(self, request, *args, **kwargs):
+        serializer = serializers.request.CreateApplicantRequestSerializer(
+            data=request.data
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        try:
+            headers = {"Location": str(serializer.data[api_settings.URL_FIELD_NAME])}
+        except (TypeError, KeyError):
+            headers = {}
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
-class JobPostController(
-    viewsets.GenericViewSet,
-):
+
+class JobPostController(viewsets.GenericViewSet):
     serializer_class = serializers.base.JobPostModelSerializer
     queryset = models.JobPostModel.objects
 
@@ -235,6 +258,14 @@ class JobPostController(
     def getJobPostById(self, request, *args, **kwargs):
         return self.sendUserResponseData(self.get_object())
 
+    def update_job_post(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return instance
+
     @swagger_auto_schema(
         responses={
             200: serializers.base.JobPostModelSerializer(),
@@ -242,7 +273,7 @@ class JobPostController(
     )
     @action(url_path="accept", methods=["PATCH"], detail=True)
     def acceptJobPost(self, request, pk=None):
-        jobPost = models.JobPostModel.objects.get(id=pk)
+        jobPost = self.update_job_post(request)
         jobPost.status = choices.JobPostStatusChoices.ACTIVE
         jobPost.save()
 
@@ -252,7 +283,21 @@ class JobPostController(
             objectId=pk,
         )
 
-        return self.sendUserResponseData(self.get_object())
+        return self.sendUserResponseData(jobPost)
+
+    @swagger_auto_schema(
+        responses={
+            200: serializers.base.JobPostModelSerializer(),
+        }
+    )
+    @action(url_path="done", methods=["PATCH"], detail=True)
+    def doneJobPost(self, request, pk=None):
+        jobPost = self.update_job_post(request)
+        jobPost.status = choices.JobPostStatusChoices.DONE
+        jobPost.datetimeEnded = timezone.now()
+        jobPost.save()
+
+        return self.sendUserResponseData(jobPost)
 
 
 class SignUpController(viewsets.GenericViewSet):
@@ -338,7 +383,16 @@ class ReviewController(viewsets.GenericViewSet):
     @swagger_auto_schema(responses={200: serializers.base.ReviewModelSerializer()})
     @action(url_path="review", methods=["POST"], detail=False)
     def postReview(self, request):
-        serializer = self.get_serializer(data=request.data)
+        contextSerializer = serializers.query.ReviewContextSerializer(
+            data=request.query_params
+        )
+        contextSerializer.is_valid(raise_exception=True)
+
+        fromUserType = contextSerializer.validated_data.get("fromUserType")
+
+        serializer = self.get_serializer(
+            data=request.data, context={"fromUserType": fromUserType}
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         try:

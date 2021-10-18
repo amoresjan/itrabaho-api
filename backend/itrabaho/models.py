@@ -88,7 +88,7 @@ class ProfileModel(models.Model):
 
 class ExperienceModel(models.Model):
     role = models.CharField(max_length=DEFAULT_MAX_LENGTH)
-    company = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    company = models.CharField(max_length=DEFAULT_MAX_LENGTH, null=True, blank=True)
     location = models.CharField(max_length=LONG_MAX_LENGTH)
     startMonth = models.CharField(max_length=SMALL_MAX_LENGTH)
     startYear = models.CharField(max_length=SMALL_MAX_LENGTH)
@@ -96,7 +96,9 @@ class ExperienceModel(models.Model):
     endYear = models.CharField(max_length=SMALL_MAX_LENGTH)
 
     # Foreign Keys
-    profile = models.ForeignKey(ProfileModel, on_delete=models.CASCADE)
+    profile = models.ForeignKey(
+        ProfileModel, on_delete=models.CASCADE, related_name="experiences"
+    )
 
     class Meta:
         verbose_name = "Experience"
@@ -106,7 +108,9 @@ class ExperienceDetailModel(models.Model):
     description = models.CharField(max_length=LONG_MAX_LENGTH)
 
     # Foreign Keys
-    experience = models.ForeignKey(ExperienceModel, on_delete=models.CASCADE)
+    experience = models.ForeignKey(
+        ExperienceModel, on_delete=models.CASCADE, related_name="details"
+    )
 
     class Meta:
         verbose_name = "Experience Detail"
@@ -116,14 +120,15 @@ class ApplicantModel(UserModel):
     address = models.CharField(max_length=LONG_MAX_LENGTH)
     status = models.CharField(max_length=1, choices=StatusChoices.choices)
 
-    def save(self, *args, **kwargs):
-        self.userType = "A"
-        super().save(*args, **kwargs)
-
     # Foreign Keys
+    profile = models.OneToOneField(ProfileModel, on_delete=models.CASCADE)
     LGURepresentativeId = models.ForeignKey(
         LGURepresentativeModel, on_delete=models.CASCADE
     )
+
+    def save(self, *args, **kwargs):
+        self.userType = "A"
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Applicant"
@@ -138,6 +143,9 @@ class ReviewModel(models.Model):
         UserModel, on_delete=models.CASCADE, related_name="+"
     )
     toUserId = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name="+")
+
+    def __str__(self) -> str:
+        return f"{self.id} / toID: {self.toUserId_id} / fromID: {self.fromUserId_id}"
 
     class Meta:
         verbose_name = "Review"
@@ -158,13 +166,20 @@ class JobPostModel(models.Model):
     description = models.CharField(max_length=LONG_MAX_LENGTH)
     role = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     datetimeCreated = models.DateTimeField(auto_now_add=True)
-    title = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    datetimeEnded = models.DateTimeField(null=True, blank=True)
+    title = models.CharField(max_length=LONG_MAX_LENGTH)
 
     # Foreign Keys
     applicantId = models.ForeignKey(
-        ApplicantModel, on_delete=models.CASCADE, null=True, blank=True
+        ApplicantModel,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="accepted_jobs",
     )
-    recruiterId = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
+    recruiterId = models.ForeignKey(
+        RecruiterModel, on_delete=models.CASCADE, related_name="posted_jobs"
+    )
     applicantReviewId = models.OneToOneField(
         ReviewModel, on_delete=models.CASCADE, null=True, blank=True, related_name="job"
     )
@@ -177,7 +192,7 @@ class JobPostModel(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{self.id} / recruiterId: {self.recruiterId_id} / { self.status }"
+        return f"{self.id} / {self.title} / recruiterId: {self.recruiterId_id} / { self.status }"
 
     class Meta:
         verbose_name = "Job Model"
@@ -190,6 +205,7 @@ class ApplicantsListModel(models.Model):
 
     class Meta:
         verbose_name = "ApplicantsList"
+        default_related_name = "job_applications"
 
 
 class ActivityModel(models.Model):
@@ -202,7 +218,7 @@ class ActivityModel(models.Model):
     contentObject = GenericForeignKey("contentType", "objectId")
 
     def __str__(self):
-        return f"{self.id} - {self.contentObject}"
+        return f"{self.type} / {self.id} - {self.contentObject}"
 
     class Meta:
         verbose_name = "Activity"
