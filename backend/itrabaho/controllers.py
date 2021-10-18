@@ -507,3 +507,21 @@ class ActivityFeedController(viewsets.GenericViewSet):
             queryset, many=True
         )
         return Response(serializer.data)
+
+
+class SkillsViewSet(viewsets.GenericViewSet):
+    serializer_class = serializers.base.SkillModelSerializer
+    queryset = models.SkillModel.objects
+
+    @swagger_auto_schema(responses={200: serializers.base.ReviewModelSerializer()})
+    @action(url_path="skills", methods=["GET"], detail=False)
+    def getSkills(self, request):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

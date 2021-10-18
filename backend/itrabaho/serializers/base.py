@@ -134,3 +134,9 @@ class MatchModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.MatchModel
         fields = "__all__"
+
+
+class SkillModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.SkillModel
+        fields = ["name"]
