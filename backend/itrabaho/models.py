@@ -119,6 +119,9 @@ class ExperienceDetailModel(models.Model):
 class SkillModel(models.Model):
     name = models.CharField(max_length=DEFAULT_MAX_LENGTH)
 
+    class Meta:
+        verbose_name = "Skill"
+
 
 class ApplicantModel(UserModel):
     address = models.CharField(max_length=LONG_MAX_LENGTH)

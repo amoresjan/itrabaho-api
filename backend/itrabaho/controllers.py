@@ -21,10 +21,7 @@ class LoginController(viewsets.GenericViewSet):
 
     @swagger_auto_schema(
         request_body=serializers.request.LoginRequestSerializer(),
-        responses={
-            200: serializers.base.UserModelSerializer,
-            400: "`string`",
-        },
+        responses={200: serializers.base.UserModelSerializer, 400: "`string`"},
     )
     @action(methods=["POST"], detail=False)
     def login(self, request):
@@ -525,3 +522,12 @@ class SkillsViewSet(viewsets.GenericViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class MatchViewSet(viewsets.GenericViewSet):
+    serializer_class = serializers.base.MatchModelSerializer
+    queryset = models.MatchModel.objects
+
+    @action(url_path="match", methods=["POST"], detail=False)
+    def match(self, request):
+        applicants = models.ApplicantModel.objects.all()

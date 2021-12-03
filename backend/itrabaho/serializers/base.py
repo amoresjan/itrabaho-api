@@ -12,8 +12,15 @@ class UserModelSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class SkillModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.SkillModel
+        fields = "__all__"
+
+
 class ApplicantsModelSerializer(serializers.ModelSerializer):
     fullName = serializers.CharField(source="getFullName")
+    skills = SkillModelSerializer(many=True, read_only=True)
 
     class Meta:
         model = models.ApplicantModel
@@ -134,9 +141,3 @@ class MatchModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.MatchModel
         fields = "__all__"
-
-
-class SkillModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.SkillModel
-        fields = ["name"]
