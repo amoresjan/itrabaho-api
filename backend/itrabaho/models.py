@@ -3,6 +3,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.base import Model
+from django.db.models.deletion import CASCADE
 from twilio.rest import Client
 
 from backend.globals import (
@@ -115,6 +116,13 @@ class ExperienceDetailModel(models.Model):
         verbose_name = "Experience Detail"
 
 
+class SkillModel(models.Model):
+    name = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+
+    class Meta:
+        verbose_name = "Skill"
+
+
 class ApplicantModel(UserModel):
     address = models.CharField(max_length=LONG_MAX_LENGTH)
     status = models.CharField(max_length=1, choices=StatusChoices.choices)
@@ -124,6 +132,7 @@ class ApplicantModel(UserModel):
     LGURepresentativeId = models.ForeignKey(
         LGURepresentativeModel, on_delete=models.CASCADE
     )
+    skills = models.ManyToManyField(SkillModel)
 
     def save(self, *args, **kwargs):
         self.userType = "A"
@@ -162,11 +171,12 @@ class JobPostModel(models.Model):
         blank=True,
         default=JobPostStatusChoices.HIRING,
     )
-    description = models.CharField(max_length=LONG_MAX_LENGTH)
+    description = models.TextField()
     role = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     datetimeCreated = models.DateTimeField(auto_now_add=True)
     datetimeEnded = models.DateTimeField(null=True, blank=True)
     title = models.CharField(max_length=LONG_MAX_LENGTH)
+    skills = models.ManyToManyField(SkillModel)
 
     # Foreign Keys
     applicantId = models.ForeignKey(
