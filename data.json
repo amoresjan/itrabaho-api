@@ -1108,7 +1108,8 @@
         "fields": {
             "address": "1943 H. Joaquino St.",
             "status": "U",
-            "LGURepresentativeId": 2
+            "LGURepresentativeId": 2,
+            "profile": 1
         }
     },
     {
@@ -1117,7 +1118,8 @@
         "fields": {
             "address": "1943 H. Joaquino St.",
             "status": "U",
-            "LGURepresentativeId": 3
+            "LGURepresentativeId": 3,
+            "profile": 2
         }
     },
     {
@@ -1126,7 +1128,8 @@
         "fields": {
             "address": "1943 H. Joaquino St.",
             "status": "U",
-            "LGURepresentativeId": 4
+            "LGURepresentativeId": 4,
+            "profile": 3
         }
     },
     {
@@ -1135,7 +1138,8 @@
         "fields": {
             "address": "1943 H. Joaquino St.",
             "status": "U",
-            "LGURepresentativeId": 5
+            "LGURepresentativeId": 5,
+            "profile": 4
         }
     },
     {
@@ -1144,7 +1148,8 @@
         "fields": {
             "address": "1943 H. Joaquino St.",
             "status": "U",
-            "LGURepresentativeId": 7
+            "LGURepresentativeId": 7,
+            "profile": 5
         }
     },
     {
@@ -1515,6 +1520,46 @@
             "percentage": 89,
             "jobPostId": 1,
             "applicantId": 11
+        }
+    },
+    {
+        "model": "itrabaho.profilemodel",
+        "pk": 1,
+        "fields": {
+            "yearsOfExperience": 1,
+            "highesteducationAttained": "E"
+        }
+    },
+    {
+        "model": "itrabaho.profilemodel",
+        "pk": 2,
+        "fields": {
+            "yearsOfExperience": 1,
+            "highesteducationAttained": "E"
+        }
+    },
+    {
+        "model": "itrabaho.profilemodel",
+        "pk": 3,
+        "fields": {
+            "yearsOfExperience": 1,
+            "highesteducationAttained": "E"
+        }
+    },
+    {
+        "model": "itrabaho.profilemodel",
+        "pk": 4,
+        "fields": {
+            "yearsOfExperience": 1,
+            "highesteducationAttained": "E"
+        }
+    },
+    {
+        "model": "itrabaho.profilemodel",
+        "pk": 5,
+        "fields": {
+            "yearsOfExperience": 1,
+            "highesteducationAttained": "E"
         }
     }
 ]

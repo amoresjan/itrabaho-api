@@ -56,6 +56,7 @@ class CreateApplicantRequestSerializer(serializers.ModelSerializer):
             "sex",
             "birthDate",
             "profile",
+            "skills",
             "LGURepresentativeId",
         ]
 
@@ -63,9 +64,11 @@ class CreateApplicantRequestSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         profile_data = validated_data.pop("profile")
         experiences_data = profile_data.pop("experiences")
+        skills_data = validated_data.pop("skills")
 
         profile = ProfileModel.objects.create(**profile_data)
         applicant = ApplicantModel.objects.create(**validated_data, profile=profile)
+        applicant.skills.set(skills_data)
 
         for experience in experiences_data:
             details = experience.pop("details")
