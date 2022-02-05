@@ -531,3 +531,6 @@ class MatchViewSet(viewsets.GenericViewSet):
     @action(url_path="match", methods=["POST"], detail=False)
     def match(self, request):
         applicants = models.ApplicantModel.objects.all()
+
+# TODO: TOTAL JOBS (count), RATING (Avg. rating all), REVIEWS (count)
+# check applicants profile page https://media.discordapp.net/attachments/879230477351915540/939249660621639680/unknown.png
