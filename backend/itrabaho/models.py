@@ -235,7 +235,7 @@ class ActivityModel(models.Model):
 
 
 class MatchModel(models.Model):
-    rank = models.PositiveSmallIntegerField()
+    rank = models.PositiveSmallIntegerField(null=True, blank=True)
     percentage = models.PositiveSmallIntegerField()
 
     # Foreign Keys
