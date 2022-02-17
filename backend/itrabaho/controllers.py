@@ -1,3 +1,7 @@
+from venv import create
+import spacy
+import jsonlines
+from spacy.pipeline import EntityRuler
 from django.contrib.auth import authenticate
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
@@ -13,6 +17,11 @@ from rest_framework.settings import api_settings
 from backend.itrabaho import models, serializers, choices
 
 from twilio.twiml.messaging_response import MessagingResponse
+
+nlp = spacy.load("en_core_web_md")
+
+new_ruler = nlp.add_pipe("entity_ruler")
+new_ruler.from_disk("skills_pattern.json")
 
 
 class LoginController(viewsets.GenericViewSet):
@@ -528,6 +537,46 @@ class MatchViewSet(viewsets.GenericViewSet):
     serializer_class = serializers.base.MatchModelSerializer
     queryset = models.MatchModel.objects
 
-    @action(url_path="match", methods=["POST"], detail=False)
-    def match(self, request):
+    @action(url_path="match", methods=["POST"], detail=True)
+    def match(self, request, pk):
+        jobPost = models.JobPostModel.objects.get(pk=pk)
         applicants = models.ApplicantModel.objects.all()
+        skills = []
+
+        for skill in jobPost.skills.all():
+            skills.append(skill.name)
+
+        for applicant in applicants:
+            skillsMatched = 0
+            skillsMatchedPercentage = 0
+
+            for skill in nlp(jobPost.description).ents:
+                if str(skill) in skills:
+                    skillsMatched = skillsMatched + 1
+
+            if skillsMatched > 0:
+                skillsMatchedPercentage = skillsMatched / len(skills) * 100
+
+                ratingsList = models.ReviewModel.objects.filter(
+                    toUserId=applicant.id
+                ).values_list("rate", flat=True)
+
+                if len(ratingsList) == 0:
+                    ratings = 0
+                elif len(ratingsList) == 1:
+                    ratings = 1
+                elif len(ratingsList) > 1 and len(ratingsList) <= 5:
+                    ratings = 2
+                elif len(ratingsList) > 5 and len(ratingsList) <= 10:
+                    ratings = 3
+
+                ratings = ratings + (sum(ratingsList) / len(ratingsList))
+
+        rank_query = models.MatchModel.objects.filter(jobPostId=jobPost).order_by(
+            "-percentage"
+        )[:10]
+
+        for rank in rank_query.iterator():
+            print(rank.applicantId.phoneNumber)
+
+        return Response("Matches created")
