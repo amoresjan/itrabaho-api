@@ -576,6 +576,7 @@ class MatchViewSet(viewsets.GenericViewSet):
             "-percentage"
         )[:10]
 
-        print(rank_query)
+        for rank in rank_query.iterator():
+            print(rank.applicantId.phoneNumber)
 
         return Response("Matches created")
