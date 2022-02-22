@@ -153,10 +153,10 @@ class ApplicantController(viewsets.GenericViewSet):
         return Response(
             {
                 "jobs": models.JobPostModel.objects.filter(applicantId=pk).count(),
-                "rating": models.ReviewModel.objects.filter(applicantId=pk).aggregate(
+                "rating": models.ReviewModel.objects.filter(toUserId=pk).aggregate(
                     Avg("rate")
-                ),
-                "reviews": models.ReviewModel.objects.filter(applicantId=pk).count(),
+                ).get('rate__avg') or 0,
+                "reviews": models.ReviewModel.objects.filter(toUserId=pk).count(),
             }
         )
 
