@@ -7,6 +7,7 @@ from django.db.models.deletion import CASCADE
 from twilio.rest import Client
 
 from backend.globals import (
+    CODE_LENGTH,
     DEFAULT_MAX_LENGTH,
     LONG_MAX_LENGTH,
     MOBILE_NUMBER_MAX_LENGTH,
@@ -176,6 +177,7 @@ class JobPostModel(models.Model):
     datetimeCreated = models.DateTimeField(auto_now_add=True)
     datetimeEnded = models.DateTimeField(null=True, blank=True)
     title = models.CharField(max_length=LONG_MAX_LENGTH)
+    # code = models.CharField(max_length=CODE_LENGTH)
     skills = models.ManyToManyField(SkillModel)
 
     # Foreign Keys
@@ -199,6 +201,9 @@ class JobPostModel(models.Model):
         blank=True,
         related_name="my_job_post",
     )
+
+    def getFullAddress(self):
+        return f"{self.street}, {self.barangay}, {self.city}, {self.province}"
 
     def __str__(self) -> str:
         return f"{self.id} / {self.title} / recruiterId: {self.recruiterId_id} / { self.status }"
