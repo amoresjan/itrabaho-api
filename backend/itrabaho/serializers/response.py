@@ -86,3 +86,9 @@ class GetActivityResponseSerializer(itrabahoSerializers.base.ActivityModelSerial
     class Meta:
         model = itrabahoSerializers.base.ActivityModelSerializer.Meta.model
         fields = ["datetimeCreated", "type", "content"]
+
+
+class ProfileStatsSerializer(serializers.Serializer):
+    jobs = serializers.IntegerField()
+    rating = serializers.IntegerField()
+    reviews = serializers.IntegerField()

@@ -1,21 +1,22 @@
+from datetime import date
+from os import environ
 from venv import create
-import spacy
+
 import jsonlines
-from spacy.pipeline import EntityRuler
+import spacy
+from backend.itrabaho import choices, models, serializers
 from django.contrib.auth import authenticate
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Q
-from django.utils import timezone
+from django.db.models import Avg, Q
 from django.http.response import HttpResponse
-from datetime import date
+from django.utils import timezone
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
-
-from backend.itrabaho import models, serializers, choices
-
+from spacy.pipeline import EntityRuler
+from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 
 nlp = spacy.load("en_core_web_md")
@@ -24,7 +25,13 @@ new_ruler = nlp.add_pipe("entity_ruler")
 new_ruler.from_disk("skills_pattern.json")
 
 
+account_sid = "AC5bd587634030a1a94c185c7d655ce92e"
+auth_token = "5340524678fd694757594693bb3c21d9"
+client = Client(account_sid, auth_token)
+
+
 class LoginController(viewsets.GenericViewSet):
+
     serializer_class = serializers.base.UserModelSerializer
     queryset = models.UserModel.objects
 
@@ -64,27 +71,6 @@ class LoginController(viewsets.GenericViewSet):
 
     def checkUserExist(self, phoneNumber):
         return models.UserModel.objects.filter(phoneNumber=phoneNumber)
-
-    @action(
-        url_path="sms",
-        methods=["POST"],
-        detail=False,
-    )
-    def incoming_sms(self, request):
-        """Send a dynamic reply to an incoming text message"""
-        # Get the message the user sent our Twilio number
-        body = request.data
-
-        # Start our TwiML response
-        resp = MessagingResponse()
-
-        # Determine the right reply for this message
-        if body["Body"] == "hello":  # need to change
-            resp.message("Hi!")
-        elif body["Body"] == "bye":
-            resp.message("Goodbye")
-
-        return HttpResponse(str(resp))
 
 
 class ApplicantController(viewsets.GenericViewSet):
@@ -146,9 +132,6 @@ class ApplicantController(viewsets.GenericViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    @swagger_auto_schema(
-        request_body=serializers.request.CreateApplicantRequestSerializer,
-    )
     @action(url_path="create", methods=["POST"], detail=False)
     def createApplicant(self, request, *args, **kwargs):
         serializer = serializers.request.CreateApplicantRequestSerializer(
@@ -162,6 +145,20 @@ class ApplicantController(viewsets.GenericViewSet):
             headers = {}
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
+    @swagger_auto_schema(responses={200: serializers.response.ProfileStatsSerializer()})
+    @action(url_path="stats", methods=["GET"], detail=True)
+    def getApplicantStats(self, request, pk):
+        return Response(
+            {
+                "jobs": models.JobPostModel.objects.filter(applicantId=pk).count(),
+                "rating": models.ReviewModel.objects.filter(toUserId=pk)
+                .aggregate(Avg("rate"))
+                .get("rate__avg")
+                or 0,
+                "reviews": models.ReviewModel.objects.filter(toUserId=pk).count(),
+            }
         )
 
 
@@ -254,6 +251,60 @@ class JobPostController(viewsets.GenericViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    @action(
+        url_path="get-sms",
+        methods=["POST"],
+        detail=False,
+    )
+    def getRecruiterSMS(self, request):
+        body = request.data
+
+        resp = MessagingResponse()
+        string_list = list(body["Body"].split(" "))
+
+        if string_list[0] == "YES":
+            try:
+                jobPost = models.JobPostModel.objects.get(code=string_list[1])
+            except:
+                resp.message(
+                    "There is no available job with this code. Please try again."
+                )
+                jobPost = None
+
+            if jobPost is not None:
+                if jobPost.status != choices.JobPostStatusChoices.HIRING:
+                    resp.message(
+                        f"Sorry, the recruitment for the job post {jobPost.title} with code {jobPost.code} is already done."
+                    )
+                else:
+                    applicant = models.ApplicantModel.objects.get(
+                        phoneNumber=body["From"]
+                    )
+                    try:
+                        match = models.MatchModel.objects.get(
+                            applicantId=applicant, jobPostId=jobPost
+                        )
+                    except:
+                        match = None
+                        resp.message("Sorry, you are not matched with this job.")
+
+                    if match is not None:
+                        if models.ApplicantsListModel.objects.filter(
+                            jobPostId=jobPost, applicantId=applicant
+                        ).exists():
+                            resp.message(
+                                "You have already sent an application to this job. Please wait for the message if you have been accepted."
+                            )
+                        else:
+                            resp.message(
+                                f"You have sent an applicant to the job {jobPost.title} with code {jobPost.code}."
+                            )
+                            models.ApplicantsListModel.objects.create(
+                                applicantId=applicant, jobPostId=jobPost
+                            )
+
+        return HttpResponse(str(resp))
 
     @swagger_auto_schema(
         responses={
@@ -537,18 +588,19 @@ class MatchViewSet(viewsets.GenericViewSet):
     serializer_class = serializers.base.MatchModelSerializer
     queryset = models.MatchModel.objects
 
-    @action(url_path="match", methods=["POST"], detail=True)
-    def match(self, request, pk):
-        jobPost = models.JobPostModel.objects.get(pk=pk)
+    @action(url_path="match", methods=["POST"], detail=False)
+    def match(self, request):
+        jobId = request.data.get("id")
+        jobPost = models.JobPostModel.objects.get(id=jobId)
         applicants = models.ApplicantModel.objects.all()
-        skills = []
-
-        for skill in jobPost.skills.all():
-            skills.append(skill.name)
 
         for applicant in applicants:
+            skills = []
             skillsMatched = 0
             skillsMatchedPercentage = 0
+
+            for skill in applicant.skills.all():
+                skills.append(skill.name)
 
             for skill in nlp(jobPost.description).ents:
                 if str(skill) in skills:
@@ -570,13 +622,27 @@ class MatchViewSet(viewsets.GenericViewSet):
                 elif len(ratingsList) > 5 and len(ratingsList) <= 10:
                     ratings = 3
 
-                ratings = ratings + (sum(ratingsList) / len(ratingsList))
+                if len(ratingsList) == 0:
+                    ratings = 0
+                else:
+                    ratings = ratings + (sum(ratingsList) / len(ratingsList))
 
-        rank_query = models.MatchModel.objects.filter(jobPostId=jobPost).order_by(
-            "-percentage"
-        )[:10]
+                models.MatchModel.objects.create(
+                    jobPostId=jobPost,
+                    percentage=ratings + skillsMatchedPercentage,
+                    applicantId=applicant,
+                )
+
+            rank_query = models.MatchModel.objects.filter(jobPostId=jobPost).order_by(
+                "-percentage"
+            )[:10]
 
         for rank in rank_query.iterator():
-            print(rank.applicantId.phoneNumber)
+            message_body = f"Good day! We are glad to inform you that one of the jobs in iTrabaho matched your profile!\n\nRole: {rank.jobPostId.role}\nRecruiter: {rank.jobPostId.recruiterId.getFullName()}\nJob Address: {rank.jobPostId.getFullAddress()}\n\nPlease reply YES 1P4GL to apply for this job application."
+            message = client.messages.create(
+                body=message_body,
+                from_="+19402454160",
+                to=rank.applicantId.phoneNumber,
+            )
 
         return Response("Matches created")
