@@ -1,59 +1,75 @@
-asgiref @ file:///home/jandale/.cache/pypoetry/artifacts/c3/92/1c/3d42ce7ad1e9e2aa1621c3fa8ebc5e21bd880a768bd691fb4f0356baa8/asgiref-3.4.1-py3-none-any.whl
-astroid @ file:///home/jandale/.cache/pypoetry/artifacts/92/57/ab/3a47d29c0ec2ff0c2c5ed8a7348c5887ee68b84390b0121cdf1dd85a56/astroid-2.7.3-py3-none-any.whl
-backports.entry-points-selectable @ file:///home/jandale/.cache/pypoetry/artifacts/28/b3/f9/3290d966259d25f13a39a46617b9a9b5591282ff22871cf30f7d35ed9f/backports.entry_points_selectable-1.1.0-py2.py3-none-any.whl
-black @ file:///home/jandale/.cache/pypoetry/artifacts/03/0e/f9/f10727f8b0ba7665a77feb04560102e8367927f9148882a69f195f2c3f/black-21.8b0-py3-none-any.whl
-certifi @ file:///home/jandale/.cache/pypoetry/artifacts/cd/2c/dc/e5bfda594e18f3f1e9af9f11e13581014d821425f325f3220b3ed2c337/certifi-2021.5.30-py2.py3-none-any.whl
-cfgv @ file:///home/jandale/.cache/pypoetry/artifacts/01/82/9f/3671a8d16261a6ab135899476dc3724864519a2461d2f62545c113637a/cfgv-3.3.1-py2.py3-none-any.whl
-charset-normalizer @ file:///home/jandale/.cache/pypoetry/artifacts/81/a2/4b/edd0e248a1a234225c53561635ef2d9005b446a88c870c68df3f48dad8/charset_normalizer-2.0.5-py3-none-any.whl
-click @ file:///home/jandale/.cache/pypoetry/artifacts/ae/32/83/e159324c1bd58177322f4e45f598d500fe22544bff20f53f55cf749da8/click-8.0.1-py3-none-any.whl
-coreapi @ file:///home/jandale/.cache/pypoetry/artifacts/a1/d2/42/9daa39a9a9b2daf74f734f46589930a09bad232e4aff2d1813be140030/coreapi-2.3.3-py2.py3-none-any.whl
-coreschema @ file:///home/jandale/.cache/pypoetry/artifacts/2b/b3/80/cfb6d6f90067a445f8c35c6ceb512abd82fe36cad196e787db866129e0/coreschema-0.0.4.tar.gz
-distlib @ file:///home/jandale/.cache/pypoetry/artifacts/42/46/26/82e48bac2bf8f6654ccd8ce7f3d50adf8b07b848badd89375dbcc196d3/distlib-0.3.3-py2.py3-none-any.whl
-dj-database-url @ file:///home/jandale/.cache/pypoetry/artifacts/45/63/a9/658183194fc3125fc68440060966adc5dd0a3fc4ce8fed4192341b49bf/dj_database_url-0.5.0-py2.py3-none-any.whl
-Django @ file:///home/jandale/.cache/pypoetry/artifacts/c3/8c/59/50a3c14099a0ad0818e40ea40af0446cd732882bbed86d63e115ffcf0d/Django-3.2.7-py3-none-any.whl
-django-cors-headers @ file:///home/jandale/.cache/pypoetry/artifacts/b4/b5/b5/1f6df269055f37ab6d102b135c29a490eab71891509d3399d923d38f95/django_cors_headers-3.8.0-py3-none-any.whl
-django-extensions @ file:///home/jandale/.cache/pypoetry/artifacts/78/59/c2/9e3f5a9e45610ef7ce175113c1eeb7dbedf9f4406ff3bb66906dc96a88/django_extensions-3.1.3-py3-none-any.whl
-djangorestframework @ file:///home/jandale/.cache/pypoetry/artifacts/e1/57/21/bfde361af294b9c9cd77dcab0182e58c2938fcee29a4e5724ef4fed0e0/djangorestframework-3.12.4-py3-none-any.whl
-drf-yasg @ file:///home/jandale/.cache/pypoetry/artifacts/29/ab/97/7e0b36792ae4427acbe5d78d8442bd592d77021892ec1138e9824b9111/drf_yasg-1.20.0-py2.py3-none-any.whl
-filelock @ file:///home/jandale/.cache/pypoetry/artifacts/7e/c4/97/2cfbeab3cc292d0b4290cb7cab0b969b3002dc24f6dd5944cbe340e684/filelock-3.0.12-py3-none-any.whl
-graphviz @ file:///home/jandale/.cache/pypoetry/artifacts/d0/a8/4e/5d1e275bda0e9abba58a1516c8409dbcf8039a04a1995cbf1d08a8972a/graphviz-0.17-py3-none-any.whl
-gunicorn @ file:///home/jandale/.cache/pypoetry/artifacts/d4/22/ea/fb991f1fdb4e8ae8fd30e0bce3c23ece991aa75df3f5a4c4f4d5aba6ae/gunicorn-20.1.0-py3-none-any.whl
-identify @ file:///home/jandale/.cache/pypoetry/artifacts/2c/61/2d/fd962c306f3f25701f05e64642b18859c01f002ba9583f5929966e46b2/identify-2.2.15-py2.py3-none-any.whl
-idna @ file:///home/jandale/.cache/pypoetry/artifacts/ff/0d/80/b45ae1ddba13a20e406682fd42ce6c201d9bedc5f592bee00cf799a1fb/idna-3.2-py3-none-any.whl
-inflection @ file:///home/jandale/.cache/pypoetry/artifacts/2f/ed/82/68adaa9865195edc03da6786b66cc708b169265e333e239c28b11e9a4d/inflection-0.5.1-py2.py3-none-any.whl
-isort @ file:///home/jandale/.cache/pypoetry/artifacts/bc/d9/39/a45ef37c64d06afcb2b384592ccd87f10eb578c31e4d4895c7557cca93/isort-5.9.3-py3-none-any.whl
-itypes @ file:///home/jandale/.cache/pypoetry/artifacts/ad/65/69/17a3a1ab828578556a7d79b3dbe47228126257b8630b5306752f7ace76/itypes-1.2.0-py2.py3-none-any.whl
-Jinja2 @ file:///home/jandale/.cache/pypoetry/artifacts/21/2e/46/0a76ea6f6a15e594c9828a85a781f1cee8ed5a1b77e361305645f9e1f4/Jinja2-3.0.1-py3-none-any.whl
-lazy-object-proxy @ file:///home/jandale/.cache/pypoetry/artifacts/fa/67/66/487627ff6d60b33d3483eda6fc6f62171481480f2eb0ce33e5c7679d17/lazy_object_proxy-1.6.0-cp39-cp39-manylinux1_x86_64.whl
-MarkupSafe @ file:///home/jandale/.cache/pypoetry/artifacts/ec/52/15/121903cbf3e26335764efabbe86a236389d359c3c9e9d060c2d90c5f01/MarkupSafe-2.0.1-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl
-mccabe @ file:///home/jandale/.cache/pypoetry/artifacts/96/5e/5f/21ae5296697ca7f94de4da6e21d4936d74029c352a35202e4c339a4253/mccabe-0.6.1-py2.py3-none-any.whl
-mypy-extensions @ file:///home/jandale/.cache/pypoetry/artifacts/92/45/bf/1807ce854ff668d92602207a37bfa9316def2a3f257bd03c4c5be4bc9b/mypy_extensions-0.4.3-py2.py3-none-any.whl
-nodeenv @ file:///home/jandale/.cache/pypoetry/artifacts/54/f0/a1/53d1e469f8e160bad013c23411375fd63d4ea70cda0fc649fcb244ca7e/nodeenv-1.6.0-py2.py3-none-any.whl
-packaging @ file:///home/jandale/.cache/pypoetry/artifacts/f9/4f/09/c91a145b26102e014fd6e33bd8c7b87306c8e1d4a771158f34dd13210e/packaging-21.0-py3-none-any.whl
-pathspec @ file:///home/jandale/.cache/pypoetry/artifacts/0a/67/21/620031f7f2938bad77b057a68a4c2a334542a7402a3214ed48690caf8c/pathspec-0.9.0-py2.py3-none-any.whl
-pipenv @ file:///home/jandale/.cache/pypoetry/artifacts/6d/12/03/5ee3d5999326af948ca297b2f75f2c6b027291ca525ab5a32802bec34b/pipenv-2021.5.29-py2.py3-none-any.whl
-platformdirs @ file:///home/jandale/.cache/pypoetry/artifacts/b5/1c/75/af1b48d59847e9602d4314e30b5eda42b3adb4d3efd767a4eefa54076d/platformdirs-2.3.0-py3-none-any.whl
-pre-commit @ file:///home/jandale/.cache/pypoetry/artifacts/42/0e/fe/db8bccf878698a112f0d0e7df6b321c152250ee983f26ecdeea683ab9d/pre_commit-2.15.0-py2.py3-none-any.whl
-psycopg2 @ file:///home/jandale/.cache/pypoetry/artifacts/60/a7/6e/6a3687658854419ffda2ced10d41dfbde38b4ba637399258136bbeee5b/psycopg2-2.9.1.tar.gz
-PyJWT @ file:///home/jandale/.cache/pypoetry/artifacts/73/c0/4c/194d7fba4fd22ace86260631f33d584545560e0da39981058013f8ac7e/PyJWT-1.7.1-py2.py3-none-any.whl
-pylint @ file:///home/jandale/.cache/pypoetry/artifacts/52/a7/50/de0360c3b0a4d3feb8e3b80a5eb6d6b02ddbf6fff724341aea2d55c1fc/pylint-2.10.2-py3-none-any.whl
-pyparsing @ file:///home/jandale/.cache/pypoetry/artifacts/92/0f/cf/effdcd5d76a6186df0969f85b3b030284ff8058936d5016540b5258ea3/pyparsing-2.4.7-py2.py3-none-any.whl
-python-dotenv @ file:///home/jandale/.cache/pypoetry/artifacts/18/b8/a3/8951d0982e502880707d9b287028b0ea076da56ff6171ec458a5fb2aef/python_dotenv-0.19.0-py2.py3-none-any.whl
-pytz @ file:///home/jandale/.cache/pypoetry/artifacts/b0/a7/8d/54de3ab4d1ff29abbbca1e9ccbaefdc2a1b290138311b84f73bee16de1/pytz-2021.1-py2.py3-none-any.whl
-PyYAML @ file:///home/jandale/.cache/pypoetry/artifacts/dd/d9/3d/cbc42de28fcde705eb305497d2f3e5679ca7890234c51348b33c0f428f/PyYAML-5.4.1-cp39-cp39-manylinux1_x86_64.whl
-regex @ file:///home/jandale/.cache/pypoetry/artifacts/16/b3/ea/efd13886af7a8e3ee046540e32b31240a3abfce1aa3ce8ddc0dca670d5/regex-2021.8.28-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-requests @ file:///home/jandale/.cache/pypoetry/artifacts/13/00/3d/5574756561eed6b522f5b13d5a2c05c2920860b05b1e687c3792495ba0/requests-2.26.0-py2.py3-none-any.whl
-ruamel.yaml @ file:///home/jandale/.cache/pypoetry/artifacts/0b/48/4c/a9e7d3b1f3a6cf9748ecb1c30252b1b33e63265ac369c74b3807fa307c/ruamel.yaml-0.17.16-py3-none-any.whl
-ruamel.yaml.clib @ file:///home/jandale/.cache/pypoetry/artifacts/52/95/75/d1a001b469ea6ed66dd6f4194c9f7eb370223816cf6292be2a8213e9a4/ruamel.yaml.clib-0.2.6-cp39-cp39-manylinux1_x86_64.whl
-six @ file:///home/jandale/.cache/pypoetry/artifacts/08/9f/47/c16ae03035fc69eaf100ea39657a49baaeef714e25a52575710c34cd48/six-1.16.0-py2.py3-none-any.whl
-sqlparse @ file:///home/jandale/.cache/pypoetry/artifacts/bc/af/02/8aa71b17fd39b26b858293918c5c6412f83768a0bfd0a4626f660aa5f8/sqlparse-0.4.1-py3-none-any.whl
-toml @ file:///home/jandale/.cache/pypoetry/artifacts/6b/6a/c9/53b19f7870a77d855e8b05ecdc98193944e5d246dafe11bbcad850ecba/toml-0.10.2-py2.py3-none-any.whl
-tomli @ file:///home/jandale/.cache/pypoetry/artifacts/7b/a4/22/559325a4271b73ba93b936f2b2953235fba10bd955a50a9c0323354809/tomli-1.2.1-py3-none-any.whl
-twilio @ file:///home/jandale/.cache/pypoetry/artifacts/f8/0f/de/0b435953f2699f9f8138a4c3ec170eb84483247e399056a1988913f985/twilio-6.63.2.tar.gz
-typing-extensions @ file:///home/jandale/.cache/pypoetry/artifacts/4e/df/c9/f8b546ab8ea4b39e1c4f91a8360f6091cc3497ef3f9eb8fa65c0375b03/typing_extensions-3.10.0.2-py3-none-any.whl
-uritemplate @ file:///home/jandale/.cache/pypoetry/artifacts/95/7b/ae/f3ee1696bf115374775b31c48531d952fcc816dad7f439a663e5c8b357/uritemplate-3.0.1-py2.py3-none-any.whl
-urllib3 @ file:///home/jandale/.cache/pypoetry/artifacts/84/ae/1e/899a124988c3b1274d9ceaf303b9261a955a4f383e23b05b83381b7faa/urllib3-1.26.6-py2.py3-none-any.whl
-virtualenv @ file:///home/jandale/.cache/pypoetry/artifacts/f7/50/18/8f7eb5aa67cb4d6bb10728d81fffd283db40c14ef2f75343788354b9e8/virtualenv-20.8.1-py2.py3-none-any.whl
-virtualenv-clone @ file:///home/jandale/.cache/pypoetry/artifacts/62/a6/67/638b26fe1157a0461b55730692528fe9c77dd99d89eb89e88b0f48a9ad/virtualenv_clone-0.5.7-py3-none-any.whl
-whitenoise @ file:///home/jandale/.cache/pypoetry/artifacts/7e/3f/f1/316ef7ba0ce1f636d99477504c03872cc272ff4c882a6d643a6991598c/whitenoise-5.3.0-py2.py3-none-any.whl
-wrapt @ file:///home/jandale/.cache/pypoetry/artifacts/6c/e2/d9/2c022794d212a87320efa16fd1b05654bf6656b6cf0510c072845ecc95/wrapt-1.12.1.tar.gz
+Warning: The lock file is not up to date with the latest changes in pyproject.toml. You may be getting outdated dependencies. Run update to update them.
+asgiref==3.5.0; python_version >= "3.7"
+astroid==2.9.3; python_full_version >= "3.6.2"
+attrs==21.4.0; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
+blis==0.7.6; python_version >= "3.6"
+catalogue==2.0.6; python_version >= "3.6"
+certifi==2021.10.8; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.6.0" and python_version >= "3.6"
+cfgv==3.3.1; python_full_version >= "3.6.1"
+charset-normalizer==2.0.12; python_full_version >= "3.6.0" and python_version >= "3.6"
+click==8.0.3; python_version >= "3.6"
+colorama==0.4.4; sys_platform == "win32" and python_full_version >= "3.6.2" and (python_version >= "3.6" and python_full_version < "3.0.0" and platform_system == "Windows" or python_full_version >= "3.5.0" and python_version >= "3.6" and platform_system == "Windows")
+coreapi==2.3.3; python_version >= "3.6"
+coreschema==0.0.4; python_version >= "3.6"
+cymem==2.0.6; python_version >= "3.6"
+distlib==0.3.4; python_full_version >= "3.6.1" and python_version >= "3.6"
+dj-database-url==0.5.0
+django-cors-headers==3.11.0; python_version >= "3.7"
+django-heroku==0.3.1
+django==3.2.12; python_version >= "3.6"
+djangorestframework==3.13.1; python_version >= "3.6"
+drf-yasg==1.20.0; python_version >= "3.6"
+filelock==3.6.0; python_full_version >= "3.6.1" and python_version >= "3.7"
+gunicorn==20.1.0; python_version >= "3.5"
+identify==2.4.10; python_version >= "3.7" and python_full_version >= "3.6.1"
+idna==3.3; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.6.0" and python_version >= "3.6"
+inflection==0.5.1; python_version >= "3.6"
+isort==5.10.1; python_full_version >= "3.6.1" and python_version < "4.0"
+itypes==1.2.0; python_version >= "3.6"
+jinja2==3.0.3; python_version >= "3.6"
+jsonlines==3.0.0; python_version >= "3.6"
+langcodes==3.3.0; python_version >= "3.6"
+lazy-object-proxy==1.7.1; python_version >= "3.6" and python_full_version >= "3.6.2"
+markupsafe==2.1.0; python_version >= "3.7"
+mccabe==0.6.1; python_full_version >= "3.6.2"
+murmurhash==1.0.6; python_version >= "3.6"
+nodeenv==1.6.0; python_full_version >= "3.6.1"
+numpy==1.22.2; python_version >= "3.8"
+packaging==21.3; python_version >= "3.6"
+pathy==0.6.1; python_version >= "3.6"
+pipenv==2021.11.23; python_version >= "3.6"
+platformdirs==2.5.0; python_version >= "3.7" and python_full_version >= "3.6.2"
+pre-commit==2.17.0; python_full_version >= "3.6.1"
+preshed==3.0.6; python_version >= "3.6"
+psycopg2-binary==2.9.3; python_version >= "3.6"
+psycopg2==2.9.3; python_version >= "3.6"
+pydantic==1.8.2; python_full_version >= "3.6.1" and python_version >= "3.6"
+pyjwt==1.7.1
+pylint==2.12.1; python_full_version >= "3.6.2"
+pyparsing==3.0.7; python_version >= "3.6"
+python-dotenv==0.19.2; python_version >= "3.5"
+pytz==2021.3; python_version >= "3.7"
+pyyaml==6.0; python_version >= "3.6" and python_full_version >= "3.6.1"
+requests==2.27.1; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.6.0" and python_version >= "3.6"
+ruamel.yaml.clib==0.2.6; platform_python_implementation == "CPython" and python_version < "3.11" and python_version >= "3.6"
+ruamel.yaml==0.17.21; python_version >= "3.6"
+six==1.16.0; python_full_version >= "3.6.1" and python_version >= "3.6"
+smart-open==5.2.1; python_version >= "3.6" and python_version < "4.0"
+spacy-legacy==3.0.8; python_version >= "3.6"
+spacy-loggers==1.0.1; python_version >= "3.6"
+spacy==3.2.2; python_version >= "3.6"
+sqlparse==0.4.2; python_version >= "3.7"
+srsly==2.4.2; python_version >= "3.6"
+thinc==8.0.13; python_version >= "3.6"
+toml==0.10.2; python_full_version >= "3.6.2"
+tqdm==4.62.3; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" and python_version >= "3.6"
+twilio==6.63.2
+typer==0.4.0; python_version >= "3.6"
+typing-extensions==4.1.1; python_version < "3.10" and python_full_version >= "3.6.2" and python_version >= "3.6"
+uritemplate==4.1.1; python_version >= "3.6"
+urllib3==1.26.8; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.6.0" and python_version < "4" and python_version >= "3.6"
+virtualenv-clone==0.5.7; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" and python_version >= "3.6"
+virtualenv==20.13.1; python_full_version >= "3.6.1" and python_version >= "3.6"
+wasabi==0.9.0; python_version >= "3.6"
+whitenoise==5.3.0; python_version >= "3.5" and python_version < "4"
+wrapt==1.13.3; python_full_version >= "3.6.2"

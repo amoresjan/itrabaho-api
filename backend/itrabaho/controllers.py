@@ -153,9 +153,10 @@ class ApplicantController(viewsets.GenericViewSet):
         return Response(
             {
                 "jobs": models.JobPostModel.objects.filter(applicantId=pk).count(),
-                "rating": models.ReviewModel.objects.filter(toUserId=pk).aggregate(
-                    Avg("rate")
-                ).get('rate__avg') or 0,
+                "rating": models.ReviewModel.objects.filter(toUserId=pk)
+                .aggregate(Avg("rate"))
+                .get("rate__avg")
+                or 0,
                 "reviews": models.ReviewModel.objects.filter(toUserId=pk).count(),
             }
         )
@@ -263,27 +264,45 @@ class JobPostController(viewsets.GenericViewSet):
         string_list = list(body["Body"].split(" "))
 
         if string_list[0] == "YES":
-            if jobPost := models.JobPostModel.objects.get(code=string_list[1]).exist():
+            try:
+                jobPost = models.JobPostModel.objects.get(code=string_list[1])
+            except:
+                resp.message(
+                    "There is no available job with this code. Please try again."
+                )
+                jobPost = None
+
+            if jobPost is not None:
                 if jobPost.status != choices.JobPostStatusChoices.HIRING:
                     resp.message(
                         f"Sorry, the recruitment for the job post {jobPost.title} with code {jobPost.code} is already done."
                     )
                 else:
                     applicant = models.ApplicantModel.objects.get(
-                        phoneNumber=body["from"]
+                        phoneNumber=body["From"]
                     )
-                    if models.MatchModel.objects.get(
-                        applicantId=applicant, jobPostId=jobPost
-                    ):
-                        resp.message(
-                            f"You have sent an applicant to the job {jobPost.title} with code {jobPost.code}."
+                    try:
+                        match = models.MatchModel.objects.get(
+                            applicantId=applicant, jobPostId=jobPost
                         )
-            else:
-                resp.message(
-                    "There is no available job with this code. Please try again."
-                )
-        elif body["Body"] == "bye":
-            resp.message("Goodbye")
+                    except:
+                        match = None
+                        resp.message("Sorry, you are not matched with this job.")
+
+                    if match is not None:
+                        if models.ApplicantsListModel.objects.filter(
+                            jobPostId=jobPost, applicantId=applicant
+                        ).exists():
+                            resp.message(
+                                "You have already sent an application to this job. Please wait for the message if you have been accepted."
+                            )
+                        else:
+                            resp.message(
+                                f"You have sent an applicant to the job {jobPost.title} with code {jobPost.code}."
+                            )
+                            models.ApplicantsListModel.objects.create(
+                                applicantId=applicant, jobPostId=jobPost
+                            )
 
         return HttpResponse(str(resp))
 
@@ -571,17 +590,17 @@ class MatchViewSet(viewsets.GenericViewSet):
 
     @action(url_path="match", methods=["POST"], detail=False)
     def match(self, request):
-        jobId = request.data.get('id')
+        jobId = request.data.get("id")
         jobPost = models.JobPostModel.objects.get(id=jobId)
         applicants = models.ApplicantModel.objects.all()
-        skills = []
-
-        for skill in jobPost.skills.all():
-            skills.append(skill.name)
 
         for applicant in applicants:
+            skills = []
             skillsMatched = 0
             skillsMatchedPercentage = 0
+
+            for skill in applicant.skills.all():
+                skills.append(skill.name)
 
             for skill in nlp(jobPost.description).ents:
                 if str(skill) in skills:
@@ -603,19 +622,27 @@ class MatchViewSet(viewsets.GenericViewSet):
                 elif len(ratingsList) > 5 and len(ratingsList) <= 10:
                     ratings = 3
 
-                ratings = ratings + (sum(ratingsList) / len(ratingsList))
+                if len(ratingsList) == 0:
+                    ratings = 0
+                else:
+                    ratings = ratings + (sum(ratingsList) / len(ratingsList))
 
-        rank_query = models.MatchModel.objects.filter(jobPostId=jobPost).order_by(
-            "-percentage"
-        )[:10]
+                models.MatchModel.objects.create(
+                    jobPostId=jobPost,
+                    percentage=ratings + skillsMatchedPercentage,
+                    applicantId=applicant,
+                )
+
+            rank_query = models.MatchModel.objects.filter(jobPostId=jobPost).order_by(
+                "-percentage"
+            )[:10]
 
         for rank in rank_query.iterator():
             message_body = f"Good day! We are glad to inform you that one of the jobs in iTrabaho matched your profile!\n\nRole: {rank.jobPostId.role}\nRecruiter: {rank.jobPostId.recruiterId.getFullName()}\nJob Address: {rank.jobPostId.getFullAddress()}\n\nPlease reply YES 1P4GL to apply for this job application."
             message = client.messages.create(
                 body=message_body,
                 from_="+19402454160",
-                to="+639774297330",
+                to=rank.applicantId.phoneNumber,
             )
-            break
 
         return Response("Matches created")
