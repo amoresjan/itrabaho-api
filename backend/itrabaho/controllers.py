@@ -569,9 +569,10 @@ class MatchViewSet(viewsets.GenericViewSet):
     serializer_class = serializers.base.MatchModelSerializer
     queryset = models.MatchModel.objects
 
-    @action(url_path="match", methods=["POST"], detail=True)
-    def match(self, request, pk):
-        jobPost = models.JobPostModel.objects.get(pk=pk)
+    @action(url_path="match", methods=["POST"], detail=False)
+    def match(self, request):
+        jobId = request.data.get('id')
+        jobPost = models.JobPostModel.objects.get(id=jobId)
         applicants = models.ApplicantModel.objects.all()
         skills = []
 
