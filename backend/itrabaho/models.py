@@ -177,7 +177,7 @@ class JobPostModel(models.Model):
     datetimeCreated = models.DateTimeField(auto_now_add=True)
     datetimeEnded = models.DateTimeField(null=True, blank=True)
     title = models.CharField(max_length=LONG_MAX_LENGTH)
-    code = models.CharField(max_length=CODE_LENGTH, null=True, blank=True)
+    code = models.CharField(max_length=CODE_LENGTH)
     skills = models.ManyToManyField(SkillModel)
 
     # Foreign Keys

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+import random, string
 
 from backend.itrabaho import models
 from backend.itrabaho.choices import AcademicLevelChoices, UserTypeChoices
@@ -103,6 +104,13 @@ class JobPostModelSerializer(serializers.ModelSerializer):
     recruit = ApplicantsModelSerializer(read_only=True, source="applicantId")
     applicantReview = ReviewModelSerializer(read_only=True, source="applicantReviewId")
     recruiterReview = ReviewModelSerializer(read_only=True, source="recruiterReviewId")
+
+    def create(self, validated_data):
+        validated_data["code"] = "".join(
+            random.choices(string.ascii_uppercase + string.digits, k=5)
+        )
+
+        return super(JobPostModelSerializer, self).create(validated_data)
 
     class Meta:
         model = models.JobPostModel
