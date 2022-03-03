@@ -34,6 +34,7 @@ class GetActivityResponseSerializer(itrabahoSerializers.base.ActivityModelSerial
                     "status",
                     "datetimeCreated",
                 ]
+                depth = 1
 
         class ReviewActivitySerializer(itrabahoSerializers.base.ReviewModelSerializer):
             jobPost = serializers.SerializerMethodField()
@@ -43,6 +44,7 @@ class GetActivityResponseSerializer(itrabahoSerializers.base.ActivityModelSerial
             class Meta:
                 model = itrabahoSerializers.base.ReviewModelSerializer.Meta.model
                 fields = ["rate", "comment", "toUser", "fromUser", "jobPost"]
+                depth = 1
 
             def get_jobPost(self, reviewInstance):
                 # TODO: finish
@@ -68,6 +70,7 @@ class GetActivityResponseSerializer(itrabahoSerializers.base.ActivityModelSerial
             class Meta:
                 model = itrabahoSerializers.base.MatchModelSerializer.Meta.model
                 fields = ["jobPostId", "applicantId", "score"]
+                depth = 1
 
         def to_representation(self, value):
             if isinstance(value, models.JobPostModel):
