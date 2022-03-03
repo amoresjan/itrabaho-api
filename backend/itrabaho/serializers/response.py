@@ -67,7 +67,7 @@ class GetActivityResponseSerializer(itrabahoSerializers.base.ActivityModelSerial
 
             class Meta:
                 model = itrabahoSerializers.base.MatchModelSerializer.Meta.model
-                fields = ["jobPostId", "applicantId", "score", "rank"]
+                fields = ["jobPostId", "applicantId", "score"]
 
         def to_representation(self, value):
             if isinstance(value, models.JobPostModel):
