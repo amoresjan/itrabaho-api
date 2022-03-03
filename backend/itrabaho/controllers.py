@@ -1,9 +1,7 @@
 from datetime import date
-from os import environ
-from venv import create
 
-import jsonlines
 import spacy
+from backend import settings
 from backend.itrabaho import choices, models, serializers
 from django.contrib.auth import authenticate
 from django.contrib.contenttypes.models import ContentType
@@ -16,18 +14,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from spacy.pipeline import EntityRuler
-from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 
 nlp = spacy.load("en_core_web_md")
 
 new_ruler = nlp.add_pipe("entity_ruler")
 new_ruler.from_disk("skills_pattern.json")
-
-
-account_sid = "AC5bd587634030a1a94c185c7d655ce92e"
-auth_token = "625275850632ab47da3a962bd47a5afd"
-client = Client(account_sid, auth_token)
 
 
 class LoginController(viewsets.GenericViewSet):
@@ -637,12 +629,15 @@ class MatchViewSet(viewsets.GenericViewSet):
                 "-score"
             )[:10]
 
-        for rank in rank_query.iterator():
-            message_body = f"Good day! We are glad to inform you that one of the jobs in iTrabaho matched your profile!\n\nRole: {rank.jobPostId.role}\nRecruiter: {rank.jobPostId.recruiterId.getFullName()}\nJob Address: {rank.jobPostId.getFullAddress()}\n\nPlease reply YES {rank.jobPost.recruiterId.code} to apply for this job application."
-            client.messages.create(
-                body=message_body,
-                from_="+19402454160",
-                to=rank.applicantId.phoneNumber,
-            )
+        if rank_query.exists():
+            for rank in rank_query.iterator():
+                message_body = f"Good day! We are glad to inform you that one of the jobs in iTrabaho matched your profile!\n\nRole: {rank.jobPostId.role}\nRecruiter: {rank.jobPostId.recruiterId.getFullName()}\nJob Address: {rank.jobPostId.getFullAddress()}\n\nPlease reply YES {rank.jobPostId.code} to apply for this job application."
+                settings.client.messages.create(
+                    body=message_body,
+                    from_="+19402454160",
+                    to=rank.applicantId.phoneNumber,
+                )
 
-        return Response("Matches created")
+            return Response("Matches created")
+        else:
+            return Response("Nothing matched!")

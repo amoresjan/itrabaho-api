@@ -14,9 +14,10 @@ from pathlib import Path
 import os
 import dj_database_url
 from dotenv import load_dotenv
+from twilio.rest import Client
 import django_heroku
 
-load_dotenv()
+load_dotenv(".env")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,9 +31,11 @@ SECRET_KEY = "django-insecure-mri7-8--qgvrp3n*+nsaqd=hyc59)3@htyri-z4oniicnik^0$
 
 
 # Twilio credentials and phone number
-TWILIO_ACCOUNT_SID = "AC5bd587634030a1a94c185c7d655ce92e"
-TWILIO_AUTH_TOKEN = "5f23e0bef38b4930b77deb2aebc25363"
-TWILIO_NUMBER = "+17472236135"
+TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
+TWILIO_NUMBER = os.environ.get("TWILIO_NUMBER")
+
+client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
