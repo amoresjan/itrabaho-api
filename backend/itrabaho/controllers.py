@@ -26,7 +26,7 @@ new_ruler.from_disk("skills_pattern.json")
 
 
 account_sid = "AC5bd587634030a1a94c185c7d655ce92e"
-auth_token = "5340524678fd694757594693bb3c21d9"
+auth_token = "625275850632ab47da3a962bd47a5afd"
 client = Client(account_sid, auth_token)
 
 
@@ -629,16 +629,16 @@ class MatchViewSet(viewsets.GenericViewSet):
 
                 models.MatchModel.objects.create(
                     jobPostId=jobPost,
-                    percentage=ratings + skillsMatchedPercentage,
+                    score=ratings + skillsMatchedPercentage,
                     applicantId=applicant,
                 )
 
             rank_query = models.MatchModel.objects.filter(jobPostId=jobPost).order_by(
-                "-percentage"
+                "-score"
             )[:10]
 
         for rank in rank_query.iterator():
-            message_body = f"Good day! We are glad to inform you that one of the jobs in iTrabaho matched your profile!\n\nRole: {rank.jobPostId.role}\nRecruiter: {rank.jobPostId.recruiterId.getFullName()}\nJob Address: {rank.jobPostId.getFullAddress()}\n\nPlease reply YES 1P4GL to apply for this job application."
+            message_body = f"Good day! We are glad to inform you that one of the jobs in iTrabaho matched your profile!\n\nRole: {rank.jobPostId.role}\nRecruiter: {rank.jobPostId.recruiterId.getFullName()}\nJob Address: {rank.jobPostId.getFullAddress()}\n\nPlease reply YES {rank.jobPost.recruiterId.code} to apply for this job application."
             client.messages.create(
                 body=message_body,
                 from_="+19402454160",
