@@ -37,18 +37,16 @@ class GetActivityResponseSerializer(itrabahoSerializers.base.ActivityModelSerial
                 depth = 1
 
         class ReviewActivitySerializer(itrabahoSerializers.base.ReviewModelSerializer):
-            jobPost = serializers.SerializerMethodField()
+            jobPostId = serializers.SerializerMethodField()
             toUser = itrabahoSerializers.base.UserModelSerializer(source="toUserId")
             fromUser = itrabahoSerializers.base.UserModelSerializer(source="fromUserId")
 
             class Meta:
                 model = itrabahoSerializers.base.ReviewModelSerializer.Meta.model
-                fields = ["rate", "comment", "toUser", "fromUser", "jobPost"]
+                fields = ["rate", "comment", "toUser", "fromUser", "jobPostId"]
                 depth = 1
 
-            def get_jobPost(self, reviewInstance):
-                # TODO: finish
-                # fromUserType = self.context.get("fromUserType")
+            def get_jobPostId(self, reviewInstance):
                 fromUserType = UserTypeChoices.RECRUITER
 
                 job = None
