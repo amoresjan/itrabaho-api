@@ -105,13 +105,6 @@ class JobPostModelSerializer(serializers.ModelSerializer):
     applicantReview = ReviewModelSerializer(read_only=True, source="applicantReviewId")
     recruiterReview = ReviewModelSerializer(read_only=True, source="recruiterReviewId")
 
-    def create(self, validated_data):
-        validated_data["code"] = "".join(
-            random.choices(string.ascii_uppercase + string.digits, k=5)
-        )
-
-        return super(JobPostModelSerializer, self).create(validated_data)
-
     class Meta:
         model = models.JobPostModel
         fields = "__all__"

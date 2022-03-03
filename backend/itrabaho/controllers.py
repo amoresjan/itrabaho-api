@@ -639,7 +639,7 @@ class MatchViewSet(viewsets.GenericViewSet):
 
         for rank in rank_query.iterator():
             message_body = f"Good day! We are glad to inform you that one of the jobs in iTrabaho matched your profile!\n\nRole: {rank.jobPostId.role}\nRecruiter: {rank.jobPostId.recruiterId.getFullName()}\nJob Address: {rank.jobPostId.getFullAddress()}\n\nPlease reply YES 1P4GL to apply for this job application."
-            message = client.messages.create(
+            client.messages.create(
                 body=message_body,
                 from_="+19402454160",
                 to=rank.applicantId.phoneNumber,

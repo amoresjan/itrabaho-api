@@ -6,6 +6,8 @@ from django.db.models.base import Model
 from django.db.models.deletion import CASCADE
 from twilio.rest import Client
 
+import random, string
+
 from backend.globals import (
     CODE_LENGTH,
     DEFAULT_MAX_LENGTH,
@@ -120,6 +122,9 @@ class ExperienceDetailModel(models.Model):
 class SkillModel(models.Model):
     name = models.CharField(max_length=DEFAULT_MAX_LENGTH)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         verbose_name = "Skill"
 
@@ -177,8 +182,7 @@ class JobPostModel(models.Model):
     datetimeCreated = models.DateTimeField(auto_now_add=True)
     datetimeEnded = models.DateTimeField(null=True, blank=True)
     title = models.CharField(max_length=LONG_MAX_LENGTH)
-    code = models.CharField(max_length=CODE_LENGTH)
-    skills = models.ManyToManyField(SkillModel)
+    code = models.CharField(max_length=CODE_LENGTH, null=True, blank=True)
 
     # Foreign Keys
     applicantId = models.ForeignKey(
@@ -208,6 +212,10 @@ class JobPostModel(models.Model):
     def __str__(self) -> str:
         return f"{self.id} / {self.title} / recruiterId: {self.recruiterId_id} / { self.status }"
 
+    def save(self, *args, **kwargs):
+        self.code = "".join(random.choices(string.ascii_uppercase + string.digits, k=5))
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "Job Model"
 
@@ -216,6 +224,9 @@ class ApplicantsListModel(models.Model):
     # Foreign Keys
     jobPostId = models.ForeignKey(JobPostModel, on_delete=models.CASCADE)
     applicantId = models.ForeignKey(ApplicantModel, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"{self.jobPostId} - {self.applicantId}"
 
     class Meta:
         verbose_name = "ApplicantsList"
@@ -240,12 +251,14 @@ class ActivityModel(models.Model):
 
 
 class MatchModel(models.Model):
-    rank = models.PositiveSmallIntegerField(null=True, blank=True)
-    percentage = models.PositiveSmallIntegerField()
+    score = models.PositiveSmallIntegerField()
 
     # Foreign Keys
     jobPostId = models.ForeignKey(JobPostModel, on_delete=models.CASCADE)
     applicantId = models.ForeignKey(ApplicantModel, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"{self.jobPostId} - {self.applicantId} - {self.score}"
 
     class Meta:
         verbose_name = "Match"

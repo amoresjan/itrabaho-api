@@ -1218,7 +1218,8 @@
             "applicantId": 11,
             "recruiterId": 13,
             "applicantReviewId": 5,
-            "recruiterReviewId": 4
+            "recruiterReviewId": 4,
+            "code": "11111"
         }
     },
     {
@@ -1237,7 +1238,8 @@
             "applicantId": null,
             "recruiterId": 13,
             "applicantReviewId": null,
-            "recruiterReviewId": null
+            "recruiterReviewId": null,
+            "code": "22222"
         }
     },
     {
@@ -1256,7 +1258,8 @@
             "applicantId": null,
             "recruiterId": 14,
             "applicantReviewId": null,
-            "recruiterReviewId": null
+            "recruiterReviewId": null,
+            "code": "33333"
         }
     },
     {
@@ -1275,7 +1278,8 @@
             "applicantId": null,
             "recruiterId": 14,
             "applicantReviewId": null,
-            "recruiterReviewId": null
+            "recruiterReviewId": null,
+            "code": "44444"
         }
     },
     {
@@ -1294,7 +1298,8 @@
             "applicantId": null,
             "recruiterId": 15,
             "applicantReviewId": null,
-            "recruiterReviewId": null
+            "recruiterReviewId": null,
+            "code": "11111"
         }
     },
     {
@@ -1313,7 +1318,8 @@
             "applicantId": null,
             "recruiterId": 15,
             "applicantReviewId": null,
-            "recruiterReviewId": null
+            "recruiterReviewId": null,
+            "code": "11111"
         }
     },
     {
@@ -1332,7 +1338,8 @@
             "applicantId": null,
             "recruiterId": 16,
             "applicantReviewId": null,
-            "recruiterReviewId": null
+            "recruiterReviewId": null,
+            "code": "11111"
         }
     },
     {
@@ -1351,7 +1358,8 @@
             "applicantId": null,
             "recruiterId": 16,
             "applicantReviewId": null,
-            "recruiterReviewId": null
+            "recruiterReviewId": null,
+            "code": "11111"
         }
     },
     {
@@ -1370,7 +1378,8 @@
             "applicantId": null,
             "recruiterId": 17,
             "applicantReviewId": null,
-            "recruiterReviewId": null
+            "recruiterReviewId": null,
+            "code": "11111"
         }
     },
     {
@@ -1389,7 +1398,8 @@
             "applicantId": 12,
             "recruiterId": 17,
             "applicantReviewId": null,
-            "recruiterReviewId": 1
+            "recruiterReviewId": 1,
+            "code": "11111"
         }
     },
     {
@@ -1506,8 +1516,7 @@
         "model": "itrabaho.matchmodel",
         "pk": 1,
         "fields": {
-            "rank": 1,
-            "percentage": 67,
+            "score": 67,
             "jobPostId": 10,
             "applicantId": 8
         }
@@ -1516,8 +1525,7 @@
         "model": "itrabaho.matchmodel",
         "pk": 3,
         "fields": {
-            "rank": 1,
-            "percentage": 89,
+            "score": 89,
             "jobPostId": 1,
             "applicantId": 11
         }
