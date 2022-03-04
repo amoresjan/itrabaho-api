@@ -326,6 +326,13 @@ class JobPostController(viewsets.GenericViewSet):
         jobPost.status = choices.JobPostStatusChoices.ACTIVE
         jobPost.save()
 
+        message_body = f"Congratulations! You have been accepted!\n\nRole: {jobPost.role}\nLocation: {jobPost.getFullAddress()}\nRecruiter: {jobPost.recruiterId.getFullName()}\nContact no.: {jobPost.recruiterId.phoneNumber}\n\nIf you have any issues and concerns, please contact us at suppor@itrabaho.com."
+        settings.client.messages.create(
+            body=message_body,
+            from_="+19402454160",
+            to=jobPost.applicantId.phoneNumber,
+        )
+
         models.ActivityModel.objects.create(
             type=choices.ActivityTypeChoices.ACCEPTED,
             contentType=ContentType.objects.get_for_model(models.JobPostModel),
